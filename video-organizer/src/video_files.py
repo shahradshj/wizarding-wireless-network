@@ -31,7 +31,7 @@ class VideoFiles:
         self.path = dirPath
         self.video_formats = ['.mp4', '.mkv', '.avi', '.flv', '.ts']
 
-        self.movies_regex = re.compile(r'(.*)_(\d{4})')
+        self.movies_regex = re.compile(r'(.*)_(\d{4})_.*')
         self.movies_name_group = 1
         self.movies_year_group = 2
         self.series_regex = re.compile(r'(.*)_S(\d{1,2})E(\d{1,2})')

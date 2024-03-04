@@ -18,7 +18,7 @@ def test_init(mock_parse_video_files, mock_get_video_files):
 def video_files():
     with patch('os.listdir') as mock_listdir:
         mock_listdir.return_value = ['movie_2022_.mp4', 'series_S01E01.mp4', 'image.jpg', 'multi_word_file_name.mp4',
-                                     'series_S10E10.mp4','series_S21E21.mp4','invalid_file.mp4', 'multi_word_file_name_1234.mp4']
+                                     'series_S10E10.mp4','series_S21E21.mp4','invalid_file.mp4', 'multi_word_file_name_1234_1080p.mp4']
         return VideoFiles('/path/to/directory')
 
 def test_is_video_file(video_files):
@@ -41,7 +41,7 @@ def test_parse_video_file(video_files):
     assert video_files.parse_video_file('series_S21E21.mp4') == os.path.normpath('Series/series ( - )/Season 21/series_S21E21.mp4')
     assert video_files.parse_video_file('invalid_file.mp4') == None
     assert video_files.parse_video_file('multi_word_file_name.mp4') == None
-    assert video_files.parse_video_file('multi_word_file_name_1234.mp4') == os.path.normpath('Movies/multi word file name (1234)/multi_word_file_name_1234.mp4')
+    assert video_files.parse_video_file('multi_word_file_name_1234_1080p.mp4') == os.path.normpath('Movies/multi word file name (1234)/multi_word_file_name_1234_1080p.mp4')
     assert video_files.parse_video_file('Top_Gear_S23E06_1080p_BluRay_30nama_30NAMA.mkv') == os.path.normpath('Series/Top Gear ( - )/Season 23/\Top_Gear_S23E06_1080p_BluRay_30nama_30NAMA.mkv')
 
 
@@ -56,7 +56,7 @@ def test_parse_video_files(video_files):
         ('series_S10E10.mp4', os.path.normpath('Series/series ( - )/Season 10/series_S10E10.mp4')),
         ('series_S21E21.mp4', os.path.normpath('Series/series ( - )/Season 21/series_S21E21.mp4')),
         ('invalid_file.mp4', None),
-        ('multi_word_file_name_1234.mp4', os.path.normpath('Movies/multi word file name (1234)/multi_word_file_name_1234.mp4'))
+        ('multi_word_file_name_1234_1080p.mp4', os.path.normpath('Movies/multi word file name (1234)/multi_word_file_name_1234_1080p.mp4'))
     ]
 
 @patch('os.listdir')
