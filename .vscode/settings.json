@@ -3,5 +3,14 @@
         "."
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "wizarding-wireless-network",
+            "database": "${workspaceFolder:wizarding-wireless-network}/movie-database/database.db"
+        }
+    ]
 }
