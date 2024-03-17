@@ -1,5 +1,4 @@
 import sqlite3
-import random
 
 conn = sqlite3.connect('movie-database/database.db')
 
