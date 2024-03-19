@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS video_files;
 -- Create the video_files table
 CREATE TABLE video_files
 (
-    id INTEGER PRIMARY KEY, -- The unique identifier for each video file
+    id VARCHAR(32) PRIMARY KEY, -- The unique identifier for each video file as a 32 character string of hexadecimal digits, use varchar(32) incase database changes
     path TEXT -- The path of the video file
 );
 

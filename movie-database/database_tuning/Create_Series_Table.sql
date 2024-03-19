@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS series;
 -- @block: Create_Series_Table
 -- Create the series table
 CREATE TABLE series (
-    id INTEGER PRIMARY KEY,
+    id VARCHAR(32) PRIMARY KEY,
     title TEXT,
     start_year INTEGER,
     end_year INTEGER,

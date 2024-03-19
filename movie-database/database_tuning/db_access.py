@@ -22,7 +22,7 @@ class DBAccess:
 
     # Video Files
     def insert_video_file(self, path):
-        id = uuid.uuid4().int & (1<<63) - 1
+        id = uuid.uuid4().hex
         self.c.execute('INSERT INTO video_files (id, path) VALUES (?, ?)', (id, path))
         self.conn.commit()
         return id

@@ -2,3 +2,7 @@
 **/.pytest_cache/
 
 movie-database/database.db
+
+# Generated files
+api/target/
+api/Cargo.lock

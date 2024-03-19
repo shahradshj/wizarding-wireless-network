@@ -77,12 +77,14 @@ class VideoFiles:
         match = self.series_regex.search(video_file)
         if match:
             name = match.group(self.series_name_group).replace('_', ' ')
+            name.replace(' s ', "'s ")
             season = int(match.group(self.series_season_group))
             return os.path.join('Series', f'{name} ( - )', f'Season {season}', video_file)
         else:
             match = self.movies_regex.search(video_file)
             if match:
                 name = match.group(self.movies_name_group).replace('_', ' ')
+                name.replace(' s ', "'s ")
                 year = match.group(self.movies_year_group)
                 return os.path.join('Movies', f'{name} ({year})', video_file)
 
