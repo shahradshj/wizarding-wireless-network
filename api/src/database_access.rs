@@ -2,16 +2,14 @@ extern crate rusqlite;
 use rocket::serde::Serialize;
 use rusqlite::{params, Connection};
 
-#[derive(Debug)]
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Movie {
     pub id: String,
     pub title: String,
     pub year: i32,
 }
 
-#[derive(Debug)]
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Series {
     pub id: String,
     pub title: String,
@@ -20,15 +18,13 @@ pub struct Series {
     pub seasons: Vec<Season>,
 }
 
-#[derive(Debug)]
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Season {
     pub season: i32,
     pub episodes: Vec<Episode>,
 }
 
-#[derive(Debug)]
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Episode {
     pub id: String,
     pub season: i32,
@@ -130,4 +126,13 @@ pub fn get_series_seasons_from_db(database_path: &str, series_id: &str) -> Serie
         .unwrap();
 
     series
+}
+
+pub fn get_video_path(database_path: &str, id: &str) -> String {
+    let conn = Connection::open(database_path).unwrap();
+    let mut stmt = conn
+        .prepare("SELECT path FROM video_files WHERE id = ?1")
+        .unwrap();
+    let path = stmt.query_row(params![id], |row| Ok(row.get(0).unwrap())).unwrap();
+    path
 }

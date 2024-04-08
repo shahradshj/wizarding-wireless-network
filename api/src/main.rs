@@ -2,9 +2,12 @@
 extern crate rocket;
 extern crate rusqlite;
 
-mod database_access;
-
+use std::path::PathBuf;
 use rocket::serde::json::Json;
+use rocket::fs::NamedFile;
+
+
+mod database_access;
 use crate::database_access::{self as db_access, Movie, Series};
 
 const DATABASE_PATH: &str = "../movie-database/database.db";
@@ -27,7 +30,14 @@ async fn get_series_by_id(id: &str) -> Json<Series> {
     Json(series)
 }
 
+#[get("/video/<id>")]
+async fn get_video_by_id(id: &str) {
+    let path = db_access::get_video_path(DATABASE_PATH, id);
+    println!("Path: {:?}", &path);
+    NamedFile::open(PathBuf::from(path));
+}
+
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![get_movies, get_series, get_series_by_id])
+    rocket::build().mount("/", routes![get_movies, get_series, get_series_by_id, get_video_by_id])
 }
