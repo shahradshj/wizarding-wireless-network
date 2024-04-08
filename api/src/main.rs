@@ -5,7 +5,7 @@ extern crate rusqlite;
 mod database_access;
 
 use rocket::serde::json::Json;
-use crate::database_access::{get_movies_from_db, get_series_from_db, get_series_seasons_from_db};
+use crate::database_access::{Movie, Series, get_movies_from_db, get_series_from_db, get_series_seasons_from_db};
 
 const DATABASE_PATH: &str = "../movie-database/database.db";
 

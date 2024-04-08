@@ -1,43 +1,41 @@
-#[macro_use]
-
 extern crate rusqlite;
 use rocket::serde::Serialize;
 use rusqlite::{params, Connection};
 
 #[derive(Debug)]
 #[derive(Serialize)]
-struct Movie {
-    id: String,
-    title: String,
-    year: i32,
+pub struct Movie {
+    pub id: String,
+    pub title: String,
+    pub year: i32,
 }
 
 #[derive(Debug)]
 #[derive(Serialize)]
-struct Series {
-    id: String,
-    title: String,
-    start_year: i32,
-    end_year: i32,
-    seasons: Vec<Season>,
+pub struct Series {
+    pub id: String,
+    pub title: String,
+    pub start_year: i32,
+    pub end_year: i32,
+    pub seasons: Vec<Season>,
 }
 
 #[derive(Debug)]
 #[derive(Serialize)]
-struct Season {
-    season: i32,
-    episodes: Vec<Episode>,
+pub struct Season {
+    pub season: i32,
+    pub episodes: Vec<Episode>,
 }
 
 #[derive(Debug)]
 #[derive(Serialize)]
-struct Episode {
-    id: String,
-    season: i32,
-    episode: i32,
+pub struct Episode {
+    pub id: String,
+    pub season: i32,
+    pub episode: i32,
 }
 
-fn get_movies_from_db(database_path: &str) -> Vec<Movie> {
+pub fn get_movies_from_db(database_path: &str) -> Vec<Movie> {
     let conn = Connection::open(database_path).unwrap();
     let mut stmt = conn.prepare("SELECT id, title, year FROM movies").unwrap();
     let movies_iter = stmt
@@ -58,7 +56,7 @@ fn get_movies_from_db(database_path: &str) -> Vec<Movie> {
     movies
 }
 
-fn get_series_from_db(database_path: &str) -> Vec<Series> {
+pub fn get_series_from_db(database_path: &str) -> Vec<Series> {
     let conn = Connection::open(database_path).unwrap();
     let mut stmt = conn
         .prepare("SELECT id, title, start_year, end_year FROM series")
@@ -83,7 +81,7 @@ fn get_series_from_db(database_path: &str) -> Vec<Series> {
     series
 }
 
-fn get_series_seasons_from_db(database_path: &str, series_id: &str) -> Series {
+pub fn get_series_seasons_from_db(database_path: &str, series_id: &str) -> Series {
     let conn = Connection::open(database_path).unwrap();
     // Fetch episodes
     let mut stmt = conn
