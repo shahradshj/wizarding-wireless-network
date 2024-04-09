@@ -31,10 +31,10 @@ async fn get_series_by_id(id: &str) -> Json<Series> {
 }
 
 #[get("/video/<id>")]
-async fn get_video_by_id(id: &str) {
-    let path = db_access::get_video_path(DATABASE_PATH, id);
-    println!("Path: {:?}", &path);
-    NamedFile::open(PathBuf::from(path));
+async fn get_video_by_id(id: &str) -> Option<NamedFile>{
+    let path = PathBuf::from(db_access::get_video_path(DATABASE_PATH, id));
+    println!("Send file: {:?}", &path);
+    NamedFile::open(path).await.ok()
 }
 
 #[launch]
