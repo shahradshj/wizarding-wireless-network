@@ -1,5 +1,8 @@
+import os
 import sys
 
+sys.path.insert(0, '.')
+sys.path.insert(0, '..')
 sys.path.insert(0, 'movie-database')
 
 from scanner.video_files import VideoFiles
@@ -54,5 +57,20 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
 
     return {"Inserted Movies": insertMoviesCount, "Skipped Movies": skipCount, "Inserted Series": insertSeriesCount, "Skipped Series": skipSeriesCount, "Inserted Episodes": insertEpisodeCount, "Skipped Episodes": skipEpisodeCount}
 
+
+def prune(db_path='movie-database/database.db'):
+    count = 0
+    with DBAccess(db_path) as db:
+        videos = db.get_videos()
+        for video in videos:
+            if not os.path.exists(video[1]):
+                db.delete_video(video[0])
+                count += 1
+    return count
+
 if __name__ == '__main__':
-    scan()
+    print(sys.argv)
+    if len(sys.argv) > 1:
+        scan(sys.argv[1])
+    else:
+        scan()

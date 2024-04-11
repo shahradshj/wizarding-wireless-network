@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS episodes;
 -- @block: Create_Episodes_Table
 -- Create the episodes table
 CREATE TABLE episodes (
-    id INTEGER PRIMARY KEY,
+    id VARCHAR(32) PRIMARY KEY,
     season INTEGER,
     episode INTEGER,
     series_id INTEGER,
