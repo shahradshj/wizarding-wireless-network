@@ -6,11 +6,11 @@ from scanner.video_files import VideoFiles
 from database_tuning.db_access import DBAccess
 
 
-def scan(directory: str = 'D:\Movies & Series'):
+def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database.db'):
     video_files = VideoFiles(directory)
     movies_and_series = video_files.parse_movies_and_series()
 
-    db = DBAccess()
+    db = DBAccess(db_path)
 
     insertMoviesCount = 0
     skipCount = 0
