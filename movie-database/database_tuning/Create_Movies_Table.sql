@@ -7,10 +7,10 @@ DROP TABLE IF EXISTS movies;
 -- @block: Create_Movies_Table
 -- Create the movies table
 CREATE TABLE movies (
-    id INTEGER PRIMARY KEY, -- The unique identifier for each movie
+    id VARCHAR(32) PRIMARY KEY, -- The unique identifier for each movie
     title TEXT, -- The title of the movie
     year INTEGER, -- The year the movie was released
-    FOREIGN KEY (id) REFERENCES video_files(id) -- The foreign key that references the id column in the video_files table
+    FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE -- The foreign key that references the id column in the video_files table. If a row in the video_files table is deleted, the corresponding row in the movies table will also be deleted.
 )
 
 -- @block: Select_All_Rows_From_Movies_Table

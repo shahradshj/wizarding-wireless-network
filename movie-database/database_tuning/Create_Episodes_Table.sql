@@ -7,12 +7,12 @@ DROP TABLE IF EXISTS episodes;
 -- @block: Create_Episodes_Table
 -- Create the episodes table
 CREATE TABLE episodes (
-    id INTEGER PRIMARY KEY,
+    id VARCHAR(32) PRIMARY KEY,
     season INTEGER,
     episode INTEGER,
     series_id INTEGER,
-    FOREIGN KEY (id) REFERENCES video_files(id),
-    FOREIGN KEY (series_id) REFERENCES series(id)
+    FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE,
+    FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE
 )
 
 -- @block: Select_All_Rows_From_Episode_Table
