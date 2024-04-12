@@ -11,7 +11,7 @@ CREATE TABLE series (
     title TEXT,
     start_year INTEGER,
     end_year INTEGER,
-    FOREIGN KEY (id) REFERENCES video_files(id)
+    FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE
 )
 
 -- @block: Select_All_Rows_From_Series_Table

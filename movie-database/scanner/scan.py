@@ -58,18 +58,19 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
     return {"Inserted Movies": insertMoviesCount, "Skipped Movies": skipCount, "Inserted Series": insertSeriesCount, "Skipped Series": skipSeriesCount, "Inserted Episodes": insertEpisodeCount, "Skipped Episodes": skipEpisodeCount}
 
 
-def prune(db_path='movie-database/database.db'):
-    count = 0
+def prune(directory: str = 'D:\Movies & Series', db_path='movie-database/database.db'):
+    removed_files = []
+    all_files = set(VideoFiles(directory).all_files())
     with DBAccess(db_path) as db:
-        videos = db.get_videos()
+        videos = db.get_video_files()
         for video in videos:
-            if not os.path.exists(video[1]):
-                db.delete_video(video[0])
-                count += 1
-    return count
+            if video[1] not in all_files:
+                db.delete_video_file(video[0])
+                removed_files.append((video[0], "..." + os.path.basename(video[1])))
+    print(f"Pruned {len(removed_files)} files.")
+    return {"Prune count": len(removed_files), "Removed:": removed_files}
 
 if __name__ == '__main__':
-    print(sys.argv)
     if len(sys.argv) > 1:
         scan(sys.argv[1])
     else:

@@ -18,7 +18,11 @@ class DBAccess:
             db_path (str): The path to the SQLite database file.
         """
         self.conn = sqlite3.connect(db_path)
+        self.conn.execute("PRAGMA foreign_keys = ON")
         self.c = self.conn.cursor()
+
+    def __enter__(self):
+        return self
 
     # Video Files
     def insert_video_file(self, path):
@@ -96,6 +100,8 @@ class DBAccess:
     def get_series_by_id(self, id):
         self.c.execute('SELECT * FROM series WHERE id = ?', (id,))
         series = self.c.fetchone()
+        if series is None:
+            return None
         return {"id": series[0], "name": series[1], "start year": series[2], "end year": series[3], "episodes": self.get_episodes_by_series_id(series[0])}
 
     def get_series_by_title(self, title):
@@ -160,4 +166,7 @@ class DBAccess:
         Closes the connection to the database.
         """
         self.conn.close()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
 
