@@ -25,6 +25,10 @@ class VideoFiles:
         self.episode_regex = re.compile(r'(.*)_S(\d{1,2})E(\d{1,2})')  # Precompile the regex
         self.group_of_episode_season = 2
         self.group_of_episode_episode = 3
+    
+    def all_files(self):
+        """Return all files in the directory."""
+        return glob.glob(os.path.join(self.directory, '**'), recursive=True)
 
     def parse_movies_and_series(self):
         """Parse movies and series from the directory."""
@@ -88,3 +92,4 @@ class VideoFiles:
             return False
         episode_match = self.episode_regex.match(path)
         return episode_match is not None
+    
