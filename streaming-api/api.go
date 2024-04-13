@@ -35,18 +35,25 @@ type Episode struct {
 }
 
 const (
-	dbPath     = "./movie-database/database.db"
+	dbPath     = "./../movie-database/database.db"
 	serverPort = ":8080"
 )
 
 var db *sql.DB
 
 func init() {
-	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+	var databasePath string
+	if len(os.Args) > 1 {
+		databasePath = os.Args[1]
+	} else {
+		databasePath = dbPath
+	}
+
+	if _, err := os.Stat(databasePath); os.IsNotExist(err) {
 		log.Fatalf("Database file does not exist: %v", err)
 	}
 
-	dbConn, err := sql.Open("sqlite3", dbPath)
+	dbConn, err := sql.Open("sqlite3", databasePath)
 	if err != nil {
 		log.Fatalf("Error opening database: %v", err)
 	}
