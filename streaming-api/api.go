@@ -71,7 +71,8 @@ func main() {
 	router.HandleFunc("/video/{id}", getVideoFile).Methods("GET")
 
 	handler := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000", "http://wizardingwireless.network"},
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET"},
 	}).Handler(router)
 
 	log.Println("Server is running on http://localhost" + serverPort)
@@ -167,8 +168,8 @@ func querySeries() ([]Series, error) {
 
 func querySeriesByID(seriesID string) (Series, error) {
 	var s Series
-	row := db.QueryRow("SELECT id FROM series WHERE id = ?", seriesID)
-	if err := row.Scan(&s.ID); err != nil {
+	row := db.QueryRow("SELECT id, title, start_year, end_year FROM series WHERE id = ?", seriesID)
+	if err := row.Scan(&s.ID, &s.Name, &s.StartYear, &s.EndYear); err != nil {
 		if err == sql.ErrNoRows {
 			return Series{}, fmt.Errorf("series not found: %v", err)
 		}
