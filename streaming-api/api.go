@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -69,8 +70,12 @@ func main() {
 	router.HandleFunc("/series/{series_id}", getSeriesEpisodes).Methods("GET")
 	router.HandleFunc("/video/{id}", getVideoFile).Methods("GET")
 
+	handler := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:3000", "http://wizardingwireless.network"},
+	}).Handler(router)
+
 	log.Println("Server is running on http://localhost" + serverPort)
-	log.Fatal(http.ListenAndServe(serverPort, router))
+	log.Fatal(http.ListenAndServe(serverPort, handler))
 }
 
 func getMovies(w http.ResponseWriter, r *http.Request) {
