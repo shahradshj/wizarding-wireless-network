@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -69,6 +70,7 @@ func main() {
 	router.HandleFunc("/series", getSeries).Methods("GET")
 	router.HandleFunc("/series/{series_id}", getSeriesEpisodes).Methods("GET")
 	router.HandleFunc("/video/{id}", getVideoFile).Methods("GET")
+	router.HandleFunc("/poster/{id}", getPosterFile).Methods("GET")
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -128,6 +130,28 @@ func getVideoFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	serveVideo(w, r, path)
+}
+
+func getPosterFile(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	videoID := params["id"]
+
+	path, err := queryVideoFilePath(videoID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+
+	var posterPath string
+	if strings.Contains(path, "Movies & Series\\Movies") {
+		posterPath = filepath.Join("./../movie-database/posters", "movies.png")
+	} else if strings.Contains(path, "Movies & Series\\Series") {
+		posterPath = filepath.Join("./../movie-database/posters", "series.png")
+	} else {
+		posterPath = filepath.Join("./../movie-database/posters", "default.png")
+	}
+	log.Printf("Serving poster file for: %s %s %s\n", videoID, path, posterPath)
+	serveVideo(w, r, posterPath)
 }
 
 func queryMovies() ([]Movie, error) {
