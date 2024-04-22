@@ -67,6 +67,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/movies", getMovies).Methods("GET")
+	router.HandleFunc("/movies/{movie_id}", getMovie).Methods("GET")
 	router.HandleFunc("/series", getSeries).Methods("GET")
 	router.HandleFunc("/series/{series_id}", getSeriesEpisodes).Methods("GET")
 	router.HandleFunc("/video/{id}", getVideoFile).Methods("GET")
@@ -82,6 +83,7 @@ func main() {
 }
 
 func getMovies(w http.ResponseWriter, r *http.Request) {
+	log.Println("Getting movies")
 	movies, err := queryMovies()
 	if err != nil {
 		handleError(w, err)
@@ -90,7 +92,23 @@ func getMovies(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, movies)
 }
 
+func getMovie(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	movieID := params["movie_id"]
+
+	log.Printf("Getting movie: %s\n", movieID)
+
+	movie, err := queryMovie(movieID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, movie)
+}
+
 func getSeries(w http.ResponseWriter, r *http.Request) {
+	log.Println("Getting series")
 	series, err := querySeries()
 	if err != nil {
 		handleError(w, err)
@@ -102,6 +120,8 @@ func getSeries(w http.ResponseWriter, r *http.Request) {
 func getSeriesEpisodes(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	seriesID := params["series_id"]
+
+	log.Printf("Getting series episodes for: %s\n", seriesID)
 
 	series, err := querySeriesByID(seriesID)
 	if err != nil {
@@ -120,6 +140,7 @@ func getSeriesEpisodes(w http.ResponseWriter, r *http.Request) {
 }
 
 func getVideoFile(w http.ResponseWriter, r *http.Request) {
+	log.Println("Getting video file")
 	params := mux.Vars(r)
 	videoID := params["id"]
 
@@ -170,6 +191,19 @@ func queryMovies() ([]Movie, error) {
 		movies = append(movies, m)
 	}
 	return movies, nil
+}
+
+func queryMovie(movieId string) (Movie, error) {
+	var movie Movie
+	row := db.QueryRow("SELECT id, title, year FROM movies WHERE id = ?", movieId)
+
+	if err := row.Scan(&movie.ID, &movie.Name, &movie.Year); err != nil {
+		if err == sql.ErrNoRows {
+			return Movie{}, fmt.Errorf("movie not found: %v", err)
+		}
+		return Movie{}, fmt.Errorf("error querying movie: %v", err)
+	}
+	return movie, nil
 }
 
 func querySeries() ([]Series, error) {
