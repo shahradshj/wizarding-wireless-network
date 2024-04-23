@@ -165,11 +165,11 @@ func getPosterFile(w http.ResponseWriter, r *http.Request) {
 
 	var posterPath string
 	if strings.Contains(path, "Movies & Series\\Movies") {
-		posterPath = filepath.Join("./../movie-database/posters", "movies.png")
+		posterPath = filepath.Join("./../movie-database/posters", "movies.jpg")
 	} else if strings.Contains(path, "Movies & Series\\Series") {
-		posterPath = filepath.Join("./../movie-database/posters", "series.png")
+		posterPath = filepath.Join("./../movie-database/posters", "series.jpg")
 	} else {
-		posterPath = filepath.Join("./../movie-database/posters", "default.png")
+		posterPath = filepath.Join("./../movie-database/posters", "default.jpg")
 	}
 	log.Printf("Serving poster file for: %s %s %s\n", videoID, path, posterPath)
 	serveVideo(w, r, posterPath)
