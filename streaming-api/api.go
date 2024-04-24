@@ -36,6 +36,16 @@ type Episode struct {
 	Episode int    `json:"episode"`
 }
 
+type SeriesEpisode struct {
+	ID        string `json:"id"`
+	SeriesID  string `json:"series_id"`
+	Name      string `json:"name"`
+	StartYear int    `json:"start_year"`
+	EndYear   int    `json:"end_year"`
+	Season    int    `json:"season"`
+	Episode   int    `json:"episode"`
+}
+
 const (
 	dbPath     = "./../movie-database/database.db"
 	serverPort = ":8080"
@@ -71,6 +81,7 @@ func main() {
 	router.HandleFunc("/series", getSeries).Methods("GET")
 	router.HandleFunc("/series/{series_id}", getSeriesEpisodes).Methods("GET")
 	router.HandleFunc("/video/{id}", getVideoFile).Methods("GET")
+	router.HandleFunc("/info/{id}", getVideoInfo).Methods("GET")
 	router.HandleFunc("/poster/{id}", getPosterFile).Methods("GET")
 
 	handler := cors.New(cors.Options{
@@ -140,9 +151,9 @@ func getSeriesEpisodes(w http.ResponseWriter, r *http.Request) {
 }
 
 func getVideoFile(w http.ResponseWriter, r *http.Request) {
-	log.Println("Getting video file")
 	params := mux.Vars(r)
 	videoID := params["id"]
+	log.Printf("Getting video file for: %s\n", videoID)
 
 	path, err := queryVideoFilePath(videoID)
 	if err != nil {
@@ -150,7 +161,53 @@ func getVideoFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serveVideo(w, r, path)
+	serveFile(w, r, path)
+}
+
+func getVideoInfo(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	videoID := params["id"]
+	log.Printf("Getting video info for: %s\n", videoID)
+
+	path, err := queryVideoFilePath(videoID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	var info map[string]interface{}
+	if strings.Contains(path, "Movies & Series\\Movies") {
+		var movie, err = queryMovie(videoID)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+		info = map[string]interface{}{"type": "movie", "movie": movie}
+	} else if strings.Contains(path, "Movies & Series\\Series") {
+		file, err := os.Stat(path)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		if file.IsDir() {
+			var series, err = querySeriesByID(videoID)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+			info = map[string]interface{}{"type": "series", "series": series}
+		} else {
+			var episode, err = queryEpisodesById(videoID)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+			info = map[string]interface{}{"type": "episode", "episode": episode}
+		}
+	} else {
+		info = map[string]interface{}{"type": "unknown"}
+	}
+	respondWithJSON(w, info)
 }
 
 func getPosterFile(w http.ResponseWriter, r *http.Request) {
@@ -172,7 +229,7 @@ func getPosterFile(w http.ResponseWriter, r *http.Request) {
 		posterPath = filepath.Join("./../movie-database/posters", "default.jpg")
 	}
 	log.Printf("Serving poster file for: %s %s %s\n", videoID, path, posterPath)
-	serveVideo(w, r, posterPath)
+	serveFile(w, r, posterPath)
 }
 
 func queryMovies() ([]Movie, error) {
@@ -254,6 +311,19 @@ func queryEpisodesBySeriesID(seriesID string) ([]Episode, error) {
 	return episodes, nil
 }
 
+func queryEpisodesById(episodeID string) (SeriesEpisode, error) {
+	var episode SeriesEpisode
+	row := db.QueryRow("SELECT id, season, episode, series_id FROM episodes WHERE id = ?", episodeID)
+	if err := row.Scan(&episode.ID, &episode.Season, &episode.Episode, &episode.SeriesID); err != nil {
+		return SeriesEpisode{}, fmt.Errorf("error scanning episode: %v", err)
+	}
+	row = db.QueryRow("SELECT title, start_year, end_year FROM series WHERE id = ?", episode.SeriesID)
+	if err := row.Scan(&episode.Name, &episode.StartYear, &episode.EndYear); err != nil {
+		return SeriesEpisode{}, fmt.Errorf("error scanning series: %v", err)
+	}
+	return episode, nil
+}
+
 func queryVideoFilePath(videoID string) (string, error) {
 	var path string
 	row := db.QueryRow("SELECT path FROM video_files WHERE id = ?", videoID)
@@ -263,7 +333,7 @@ func queryVideoFilePath(videoID string) (string, error) {
 	return path, nil
 }
 
-func serveVideo(w http.ResponseWriter, r *http.Request, path string) {
+func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 	info, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {
