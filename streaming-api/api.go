@@ -233,7 +233,7 @@ func getPosterFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryMovies() ([]Movie, error) {
-	rows, err := db.Query("SELECT id, title, year FROM movies")
+	rows, err := db.Query("SELECT id, title, year FROM movies ORDER BY title ASC")
 	if err != nil {
 		return nil, fmt.Errorf("error querying movies: %v", err)
 	}
@@ -264,7 +264,7 @@ func queryMovie(movieId string) (Movie, error) {
 }
 
 func querySeries() ([]Series, error) {
-	rows, err := db.Query("SELECT id, title, start_year, end_year FROM series")
+	rows, err := db.Query("SELECT id, title, start_year, end_year FROM series ORDER BY title ASC")
 	if err != nil {
 		return nil, fmt.Errorf("error querying series: %v", err)
 	}
@@ -294,7 +294,7 @@ func querySeriesByID(seriesID string) (Series, error) {
 }
 
 func queryEpisodesBySeriesID(seriesID string) ([]Episode, error) {
-	rows, err := db.Query("SELECT id, season, episode FROM episodes WHERE series_id = ?", seriesID)
+	rows, err := db.Query("SELECT id, season, episode FROM episodes WHERE series_id = ? ORDER BY season, episode", seriesID)
 	if err != nil {
 		return nil, fmt.Errorf("error querying episodes: %v", err)
 	}
