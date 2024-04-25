@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -203,6 +204,10 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 
 func handleError(w http.ResponseWriter, err error) {
 	log.Printf("Error: %v\n", err)
+	if strings.Contains(err.Error(), sql.ErrNoRows.Error()) {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
