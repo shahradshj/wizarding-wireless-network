@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
+
+	"github.com/google/uuid"
 )
 
 type Movie struct {
@@ -157,4 +160,42 @@ func queryVideoFilePath(videoID string) (string, error) {
 		return "", fmt.Errorf("error scanning video file: %v", err)
 	}
 	return path, nil
+}
+
+func queryUser(username string) (string, error) {
+	var id string
+	row := db.QueryRow("SELECT id FROM users WHERE username = ?", username)
+	if err := row.Scan(&id); err != nil {
+		if err == sql.ErrNoRows {
+			id = uuid.New().String()
+			id = strings.Replace(id, "-", "", -1)
+			_, err = db.Exec("INSERT INTO users (id, username) VALUES (?, ?);", id, username)
+			if err != nil {
+				return "", fmt.Errorf("error inserting user: %v", err)
+			}
+		} else {
+			return "", fmt.Errorf("error scanning user: %v", err)
+		}
+	}
+	return id, nil
+}
+
+func queryWatchHistory(userID, videoID string) (int, error) {
+	var timestamp int
+	row := db.QueryRow("SELECT timestamp FROM watch_history WHERE user_id = ? AND video_id = ?", userID, videoID)
+	if err := row.Scan(&timestamp); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+		return 0, fmt.Errorf("error scanning watch history: %v", err)
+	}
+	return timestamp, nil
+}
+
+func insertWatchHistory(userID, videoID, timestamp string) error {
+	_, err := db.Exec("INSERT INTO watch_history (user_id, video_id, timestamp) VALUES (?, ?, ?);", userID, videoID, timestamp)
+	if err != nil {
+		return fmt.Errorf("error inserting watch history: %v", err)
+	}
+	return nil
 }

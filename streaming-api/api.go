@@ -32,6 +32,9 @@ func main() {
 	router.HandleFunc("/video/{id}", getVideoFile).Methods("GET")
 	router.HandleFunc("/info/{id}", getVideoInfo).Methods("GET")
 	router.HandleFunc("/poster/{id}", getPosterFile).Methods("GET")
+	router.HandleFunc("/user/{userName}", getUserId).Methods("GET")
+	router.HandleFunc("/user/{userId}/{videoId}", getWatchHistory).Methods("GET")
+	router.HandleFunc("/user/{userId}/{videoId}/{timestamps}", addWatchHistory).Methods("PUT")
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -216,4 +219,46 @@ func respondWithJSON(w http.ResponseWriter, data interface{}) {
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		handleError(w, fmt.Errorf("error encoding JSON response: %v", err))
 	}
+}
+
+func getUserId(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userName := params["userName"]
+	log.Printf("Getting user id for: %s\n", userName)
+
+	userID, err := queryUser(userName)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, userID)
+}
+
+func getWatchHistory(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID := params["userId"]
+	videoID := params["videoId"]
+	log.Printf("Getting watch history for: %s %s\n", userID, videoID)
+
+	watchHistory, err := queryWatchHistory(userID, videoID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, watchHistory)
+}
+
+func addWatchHistory(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID := params["userId"]
+	videoID := params["videoId"]
+	timestamp := params["timestamps"]
+	log.Printf("Adding watch history for: %s %s %s\n", userID, videoID, timestamp)
+
+	err := insertWatchHistory(userID, videoID, timestamp)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, "Watch history added")
 }
