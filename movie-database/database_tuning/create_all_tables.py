@@ -5,7 +5,7 @@ conn.execute("PRAGMA foreign_keys = 1")
 c = conn.cursor()
 
 # Read SQL file
-with open('Creat_All_Tables.sql', 'r') as sql_file:
+with open('Creat_All_Tables.sqlite', 'r') as sql_file:
     sql_script = sql_file.read()
 
 # Execute SQL script
