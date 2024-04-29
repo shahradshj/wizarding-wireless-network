@@ -1,32 +1,10 @@
--- @block drop video_files table
--- Drop the video_files table if it exists
-DROP TABLE IF EXISTS video_files;
-
--- @block drop movies table
--- Drop the movies table if it exists
-DROP TABLE IF EXISTS movies;
-
--- @block drop series table
--- Drop the series table if it exists
-DROP TABLE IF EXISTS series;
-
--- @block drop episodes table
--- Drop the episodes table if it exists
-DROP TABLE IF EXISTS episodes;
-
--- @block drop users table
--- Drop the users table if it exists
-DROP TABLE IF EXISTS users;
-
--- @block drop watch_history table
--- Drop the watch_history table if it exists
-DROP TABLE IF EXISTS watch_history;
-
 -- @block enable foreign key constraints
 -- Enable foreign key constraints
 PRAGMA foreign_keys = ON;
 
 -- @block create video_files table
+-- Drop the video_files table if it already exists
+DROP TABLE IF EXISTS video_files;
 -- Enable foreign key constraints
 PRAGMA foreign_keys = ON;
 -- Create the video_files table
@@ -36,6 +14,8 @@ CREATE TABLE video_files (
 );
 
 -- @block create movies table
+-- Drop the movies table if it already exists
+DROP TABLE IF EXISTS movies;
 -- Enable foreign key constraints
 PRAGMA foreign_keys = ON;
 -- Create the movies table
@@ -47,6 +27,8 @@ CREATE TABLE movies (
 );
 
 -- @block create series table
+-- Drop the series table if it already exists
+DROP TABLE IF EXISTS series;
 -- Enable foreign key constraints
 PRAGMA foreign_keys = ON;
 -- Create the series table
@@ -59,6 +41,8 @@ CREATE TABLE series (
 );
 
 -- @block create episodes table
+-- Drop the episodes table if it already exists
+DROP TABLE IF EXISTS episodes;
 -- Enable foreign key constraints
 PRAGMA foreign_keys = ON;
 -- Create the episodes table
@@ -72,6 +56,8 @@ CREATE TABLE episodes (
 );
 
 -- @block create users table
+-- Drop the users table if it already exists
+DROP TABLE IF EXISTS users;
 -- Enable foreign key constraints
 PRAGMA foreign_keys = ON;
 -- Create the users table
@@ -81,6 +67,8 @@ CREATE TABLE users (
 );
 
 -- @block create watch_history table
+-- Drop the watch_history table if it already exists
+DROP TABLE IF EXISTS watch_history;
 -- Enable foreign key constraints
 PRAGMA foreign_keys = ON;
 -- Create the watch_history table
