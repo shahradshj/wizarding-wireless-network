@@ -1,15 +1,15 @@
 import sqlite3
 
 conn = sqlite3.connect('movie-database/database.db')
+conn.execute("PRAGMA foreign_keys = 1")
 c = conn.cursor()
 
 # Read SQL file
-with open('/c:/Software Development/wizarding-wireless-network/movie-database/database_tuning/Creat_Series_Table.sql', 'r') as sql_file:
+with open('Creat_All_Tables.sqlite', 'r') as sql_file:
     sql_script = sql_file.read()
 
 # Execute SQL script
 c.executescript(sql_script)
 
-
 conn.commit()
-conn.close
+conn.close()
