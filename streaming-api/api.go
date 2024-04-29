@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -33,12 +34,14 @@ func main() {
 	router.HandleFunc("/info/{id}", getVideoInfo).Methods("GET")
 	router.HandleFunc("/poster/{id}", getPosterFile).Methods("GET")
 	router.HandleFunc("/user/{userName}", getUserId).Methods("GET")
+	router.HandleFunc("/user/{userName}", addUser).Methods("POST")
 	router.HandleFunc("/user/{userId}/{videoId}", getWatchHistory).Methods("GET")
 	router.HandleFunc("/user/{userId}/{videoId}/{timestamps}", addWatchHistory).Methods("PUT")
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET"},
+		AllowedMethods: []string{"GET", "PUT", "POST"},
+		// AllowedMethods: []string{"GET"},
 	}).Handler(router)
 
 	log.Println("Server is running on http://localhost" + serverPort)
@@ -231,7 +234,20 @@ func getUserId(w http.ResponseWriter, r *http.Request) {
 		handleError(w, err)
 		return
 	}
-	respondWithJSON(w, userID)
+	w.Write([]byte(userID))
+}
+
+func addUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userName := params["userName"]
+	log.Printf("Adding user: %s\n", userName)
+
+	userID, err := insertUser(userName)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	w.Write([]byte(userID))
 }
 
 func getWatchHistory(w http.ResponseWriter, r *http.Request) {
@@ -245,7 +261,7 @@ func getWatchHistory(w http.ResponseWriter, r *http.Request) {
 		handleError(w, err)
 		return
 	}
-	respondWithJSON(w, watchHistory)
+	w.Write([]byte(fmt.Sprintf("%d", watchHistory)))
 }
 
 func addWatchHistory(w http.ResponseWriter, r *http.Request) {
@@ -254,11 +270,15 @@ func addWatchHistory(w http.ResponseWriter, r *http.Request) {
 	videoID := params["videoId"]
 	timestamp := params["timestamps"]
 	log.Printf("Adding watch history for: %s %s %s\n", userID, videoID, timestamp)
-
-	err := insertWatchHistory(userID, videoID, timestamp)
+	timestampInt, err := strconv.Atoi(timestamp)
 	if err != nil {
 		handleError(w, err)
 		return
 	}
-	respondWithJSON(w, "Watch history added")
+	err = insertWatchHistory(userID, videoID, timestampInt)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	w.Write([]byte("OK"))
 }

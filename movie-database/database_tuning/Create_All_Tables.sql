@@ -27,6 +27,8 @@ DROP TABLE IF EXISTS watch_history;
 PRAGMA foreign_keys = ON;
 
 -- @block create video_files table
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
 -- Create the video_files table
 CREATE TABLE video_files (
     id VARCHAR(32) PRIMARY KEY,
@@ -34,6 +36,8 @@ CREATE TABLE video_files (
 );
 
 -- @block create movies table
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
 -- Create the movies table
 CREATE TABLE movies (
     id VARCHAR(32) PRIMARY KEY,
@@ -43,6 +47,8 @@ CREATE TABLE movies (
 );
 
 -- @block create series table
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
 -- Create the series table
 CREATE TABLE series (
     id VARCHAR(32) PRIMARY KEY,
@@ -53,6 +59,8 @@ CREATE TABLE series (
 );
 
 -- @block create episodes table
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
 -- Create the episodes table
 CREATE TABLE episodes (
     id VARCHAR(32) PRIMARY KEY,
@@ -64,6 +72,8 @@ CREATE TABLE episodes (
 );
 
 -- @block create users table
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
 -- Create the users table
 CREATE TABLE users (
     id varchar(32) PRIMARY KEY,
@@ -71,6 +81,8 @@ CREATE TABLE users (
 );
 
 -- @block create watch_history table
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
 -- Create the watch_history table
 CREATE TABLE watch_history (
     user_id VARCHAR(32),

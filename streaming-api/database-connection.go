@@ -54,7 +54,7 @@ func init() {
 		log.Fatalf("Database file does not exist: %v", err)
 	}
 
-	dbConn, err := sql.Open("sqlite3", databasePath)
+	dbConn, err := sql.Open("sqlite3", databasePath+"?_foreign_keys=on")
 	if err != nil {
 		log.Fatalf("Error opening database: %v", err)
 	}
@@ -166,16 +166,17 @@ func queryUser(username string) (string, error) {
 	var id string
 	row := db.QueryRow("SELECT id FROM users WHERE username = ?", username)
 	if err := row.Scan(&id); err != nil {
-		if err == sql.ErrNoRows {
-			id = uuid.New().String()
-			id = strings.Replace(id, "-", "", -1)
-			_, err = db.Exec("INSERT INTO users (id, username) VALUES (?, ?);", id, username)
-			if err != nil {
-				return "", fmt.Errorf("error inserting user: %v", err)
-			}
-		} else {
-			return "", fmt.Errorf("error scanning user: %v", err)
-		}
+		return "", fmt.Errorf("error scanning user: %v", err)
+	}
+	return id, nil
+}
+
+func insertUser(username string) (string, error) {
+	id := uuid.New().String()
+	id = strings.Replace(id, "-", "", -1)
+	_, err := db.Exec("INSERT INTO users (id, username) VALUES (?, ?);", id, username)
+	if err != nil {
+		return "", fmt.Errorf("error inserting user: %v", err)
 	}
 	return id, nil
 }
@@ -192,8 +193,8 @@ func queryWatchHistory(userID, videoID string) (int, error) {
 	return timestamp, nil
 }
 
-func insertWatchHistory(userID, videoID, timestamp string) error {
-	_, err := db.Exec("INSERT INTO watch_history (user_id, video_id, timestamp) VALUES (?, ?, ?);", userID, videoID, timestamp)
+func insertWatchHistory(userID string, videoID string, timestamp int) error {
+	_, err := db.Exec("INSERT or REPLACE INTO watch_history (user_id, video_id, timestamp) VALUES (?, ?, ?);", userID, videoID, timestamp)
 	if err != nil {
 		return fmt.Errorf("error inserting watch history: %v", err)
 	}
