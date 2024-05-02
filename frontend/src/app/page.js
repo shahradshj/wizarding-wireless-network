@@ -1,9 +1,14 @@
-import Image from "next/image";
+'use client'
+
+import NavigationBar from "./components/NavigationBar";
+import User from "./components/User";
+import Movies from "./components/Movies";
 
 export default function Home() {
+
   return (
+
     <div style={{
-      textAlign: "center",
       backgroundImage: `url(/hogwarts-wireless.jpeg)`,
       backgroundSize: 'cover', backgroundPosition: 'center top',
       backgroundRepeat: 'no-repeat',
@@ -11,10 +16,9 @@ export default function Home() {
       height: '100vh',
       overflow: 'hidden'
     }}>
-      <h1>Welcome to the Wizarding Wireless Network</h1>
-      <p>
-        Home Streaming Service for Witches and Wizards
-      </p>
+      <User setUserId={(id) => console.log(id)} />
+      <NavigationBar changeNavigation={(option) => {console.log(option)}}/>
+      {/* <Movies /> */}
     </div>
   );
 }

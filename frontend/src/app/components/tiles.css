@@ -1,0 +1,31 @@
+.title {
+    width: 200px;
+    margin: 20px;
+    position: relative;
+}
+
+.poster {
+    width: 100%;
+    height: auto;
+}
+
+.info {
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    width: 100%;
+    padding: 10px;
+}
+
+.name {
+    margin: 0;
+    font-size: 16px;
+}
+
+.year {
+    margin: 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
