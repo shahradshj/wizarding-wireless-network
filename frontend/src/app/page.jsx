@@ -1,7 +1,5 @@
 
 import App from "./components/App";
-import Movies from "./components/Movies";
-
 
 export default function Home({ searchParams }) {
 
