@@ -3,7 +3,7 @@ import App from "./components/App";
 import Movies from "./components/Movies";
 
 
-export default function Home() {
+export default function Home({ searchParams }) {
 
   return (
     <div style={{
@@ -11,15 +11,12 @@ export default function Home() {
       backgroundSize: 'cover',
       backgroundAttachment: 'fixed',
       backgroundRepeat: 'no-repeat',
+      justifyContent: 'center',
       width: '100vw',
-      height: '100%',
+      minHeight: '100vh',
       maxWidth: '100%'
     }}>
-      <App>
-        {{
-          movies: <Movies />
-        }}
-      </App>
+      <App searchParams={searchParams}/>
     </div>
   );
 }

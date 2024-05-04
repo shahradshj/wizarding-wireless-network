@@ -1,16 +1,17 @@
-'use client'
 
-import React, { useState } from 'react';
+import React from 'react';
 
 import NavigationBar from './NavigationBar';
 import User from './User';
+import Movies from './Movies';
 
-export default function App({ children }) {
+export default function App({ searchParams, }) {
+    const navigation = searchParams.navigation || '';
     return (
         <div>
-            <User setUserId={(id) => console.log(id)} />
-            <NavigationBar changeNavigation={(option) => { console.log(option) }} />
-            {children.movies}
+            <User searchParams={searchParams}/>
+            <NavigationBar searchParams={searchParams}/>
+            {navigation === 'Movies' && <Movies />}
         </div>
     );
 }

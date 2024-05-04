@@ -1,20 +1,36 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { addUser, getUserId } from '../helpers/apiHelpers';
+import { addUser, getUserId, getUserName } from '../helpers/apiHelpers';
 
-const User = ({ setUserId }) => {
+const User = ({ searchParams }) => {
+    const router = useRouter();
+    const otherParams = Object.keys(searchParams).filter(key => key !== 'userId').map(key => `${key}=${searchParams[key]}`).join('&');
     const [userName, setUserName] = useState('');
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [userId, setUserId] = useState(searchParams.userId || '');
+
+    useEffect(() => {
+        console.log('User:', userId, userName, searchParams.userId);
+        if (userName === '' && userId !== '') {
+            getUserName(userId).then(name => setUserName(name));
+        }
+
+        if (userId === '') {
+            router.replace(`?${otherParams}`);
+        }
+        else if (searchParams.userId || searchParams.userId !== userId) {
+            router.replace(`?userId=${userId}` + (otherParams ? `&${otherParams}` : ''));
+        }
+        
+    }, [userId, searchParams.userId]);
 
     const handleSignUp = async () => {
         console.log('Signing up:', userName);
-        console.log('BASE_URL:', process.env.REACT_APP_BASE_URL);
         try {
             const id = await addUser(userName);
             setUserId(id);
-            setLoggedIn(true);
         } catch (error) {
             console.error('Error during sign up:', error);
         }
@@ -22,11 +38,9 @@ const User = ({ setUserId }) => {
 
     const handleSignIn = async () => {
         console.log('Signing in:', userName);
-        console.log('BASE_URL:', process.env.REACT_APP_BASE_URL);
         try {
             const id = await getUserId(userName);
             setUserId(id);
-            setLoggedIn(true);
         } catch (error) {
             console.error('Error during sign in:', error);
         }
@@ -34,16 +48,16 @@ const User = ({ setUserId }) => {
 
     return (
         <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', textAlign: 'right' }}>
-            {!loggedIn && <input
-                style={{ width: '150px', color: 'white', backgroundColor: 'rgba(0, 0, 0, 0)'}}
+            {userId === '' && <input
+                style={{ width: '150px', color: 'white', backgroundColor: 'rgba(0, 0, 0, 0)' }}
                 type="text"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 placeholder="Enter username"
             />}
-            {!loggedIn && <button onClick={handleSignUp} style={{ margin: '5px', color: 'white' }}>Sign Up</button>}
-            {!loggedIn && <button onClick={handleSignIn} style={{ margin: '5px', color: 'white' }}>Sign In</button>}
-            {loggedIn && <p>Welcome {userName}!<button style={{ margin: '5px', color: 'white' }} onClick={() => { setUserId(''); setLoggedIn(false) }}>Sign Out</button></p>}
+            {userId === '' && <button onClick={handleSignUp} style={{ margin: '5px', color: 'white' }}>Sign Up</button>}
+            {userId === '' && <button onClick={handleSignIn} style={{ margin: '5px', color: 'white' }}>Sign In</button>}
+            {userId !== '' && <p>Welcome {userName}!<button style={{ margin: '5px', color: 'white' }} onClick={() => setUserId('')}>Sign Out</button></p>}
         </div>
     );
 };

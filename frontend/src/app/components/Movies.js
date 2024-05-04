@@ -5,15 +5,17 @@ import './tiles.css';
 import { getMovies } from '../helpers/apiHelpers';
 import Movie from './Movie';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+
 export default async function Movies() {
     const movies = await getMovies();
     return (
         <div className='movie-series-container'>
             {movies && movies.map(movie => (
-                <Movie key={movie.id} movie={movie} />
-                // <Link href={`/movies/${movie.id}`} key={movie.id}>
-                //     <Movie movie={movie} />
-                // </Link>
+                <Link key={movie.id} href={`${BASE_URL}/stream/${movie.id}`} rel="noopener noreferrer">
+                    <Movie movie={movie} />
+                </Link>
             ))}
         </div>
     );

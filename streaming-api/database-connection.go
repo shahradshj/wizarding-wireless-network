@@ -40,6 +40,11 @@ type SeriesEpisode struct {
 	Episode   int    `json:"episode"`
 }
 
+type User struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+}
+
 var db *sql.DB
 
 func init() {
@@ -162,13 +167,15 @@ func queryVideoFilePath(videoID string) (string, error) {
 	return path, nil
 }
 
-func queryUser(username string) (string, error) {
-	var id string
-	row := db.QueryRow("SELECT id FROM users WHERE username = ?", username)
-	if err := row.Scan(&id); err != nil {
-		return "", fmt.Errorf("error scanning user: %v", err)
+func queryUser(userIdOrName string) (User, error) {
+	var user User
+	row := db.QueryRow("SELECT id, username FROM users WHERE username = ?", userIdOrName)
+	if err := row.Scan(&user.ID, &user.Username); err != nil {
+		if err = db.QueryRow("SELECT id, username FROM users WHERE id = ?", userIdOrName).Scan(&user.ID, &user.Username); err != nil {
+			return user, fmt.Errorf("error scanning user: %v", err)
+		}
 	}
-	return id, nil
+	return user, nil
 }
 
 func insertUser(username string) (string, error) {

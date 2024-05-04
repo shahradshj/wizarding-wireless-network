@@ -229,12 +229,12 @@ func getUserId(w http.ResponseWriter, r *http.Request) {
 	userName := params["userName"]
 	log.Printf("Getting user id for: %s\n", userName)
 
-	userID, err := queryUser(userName)
+	user, err := queryUser(userName)
 	if err != nil {
 		handleError(w, err)
 		return
 	}
-	w.Write([]byte(userID))
+	respondWithJSON(w, user)
 }
 
 func addUser(w http.ResponseWriter, r *http.Request) {

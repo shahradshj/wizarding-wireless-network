@@ -1,8 +1,9 @@
 import React from 'react';
+import Link from 'next/link';
 
-function NavigationBar(props) {
+function NavigationBar({ searchParams }) {
   const navOptions = ['Movies', 'Suggestions', 'Series', 'Favorites', 'Collections', 'Genres'];
-
+  const otherParams = Object.keys(searchParams).filter(key => key !== 'navigation').map(key => `${key}=${searchParams[key]}`).join('&');
   return (
     <nav style={{
       display: 'flex',
@@ -12,14 +13,15 @@ function NavigationBar(props) {
       color: '#fff'
     }}>
       {navOptions.map(option => (
-        <button
+        <Link
+          href={`/?navigation=${option}` + (otherParams ? `&${otherParams}` : '')}
           key={option}
-          style={{ color: '#fff', textDecoration: 'none' }}
-          onClick={() => props.changeNavigation(option)}>
+          style={{ color: '#fff', textDecoration: 'none' }}>
           {option}
-        </button>
-      ))}
-    </nav>
+        </Link>
+      ))
+      }
+    </nav >
   );
 }
 
