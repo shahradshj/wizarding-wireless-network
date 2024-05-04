@@ -10,6 +10,7 @@ const User = ({ setUserId }) => {
 
     const handleSignUp = async () => {
         console.log('Signing up:', userName);
+        console.log('BASE_URL:', process.env.REACT_APP_BASE_URL);
         try {
             const id = await addUser(userName);
             setUserId(id);
@@ -21,6 +22,7 @@ const User = ({ setUserId }) => {
 
     const handleSignIn = async () => {
         console.log('Signing in:', userName);
+        console.log('BASE_URL:', process.env.REACT_APP_BASE_URL);
         try {
             const id = await getUserId(userName);
             setUserId(id);
@@ -31,9 +33,9 @@ const User = ({ setUserId }) => {
     };
 
     return (
-        <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', textAlign: 'right' }}>
             {!loggedIn && <input
-                style={{ width: '150px', color: 'white', backgroundColor: 'rgba(0, 0, 0, 0)', border: '1px solid white', borderRadius: '5px', padding: '5px', margin: '5px'}}
+                style={{ width: '150px', color: 'white', backgroundColor: 'rgba(0, 0, 0, 0)'}}
                 type="text"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}

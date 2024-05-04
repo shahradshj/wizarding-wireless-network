@@ -1,24 +1,25 @@
-'use client'
 
-import NavigationBar from "./components/NavigationBar";
-import User from "./components/User";
+import App from "./components/App";
 import Movies from "./components/Movies";
+
 
 export default function Home() {
 
   return (
-
     <div style={{
       backgroundImage: `url(/hogwarts-wireless.jpeg)`,
-      backgroundSize: 'cover', backgroundPosition: 'center top',
+      backgroundSize: 'cover',
+      backgroundAttachment: 'fixed',
       backgroundRepeat: 'no-repeat',
       width: '100vw',
-      height: '100vh',
-      overflow: 'hidden'
+      height: '100%',
+      maxWidth: '100%'
     }}>
-      <User setUserId={(id) => console.log(id)} />
-      <NavigationBar changeNavigation={(option) => {console.log(option)}}/>
-      {/* <Movies /> */}
+      <App>
+        {{
+          movies: <Movies />
+        }}
+      </App>
     </div>
   );
 }
