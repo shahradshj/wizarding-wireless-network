@@ -10,8 +10,8 @@ import { getSeries, getSeriesById } from '../helpers/apiHelpers';
 
 
 export default async function App({ searchParams, }) {
-    const navigation = searchParams.navigation || '';
-    const otherParams = Object.keys(searchParams).filter(key => key !== 'navigation').map(key => `${key}=${searchParams[key]}`).join('&');
+    const params = new URLSearchParams(searchParams);
+    const navigation = params.get.navigation?.toLowerCase() || '';
     const series = await getSeries();
     let selectedSeries = null;
     if (series.some((aSeries) => aSeries.id === navigation)) {
@@ -21,12 +21,12 @@ export default async function App({ searchParams, }) {
         <div>
             <User searchParams={searchParams} />
             <NavigationBar searchParams={searchParams} />
-            {navigation === 'Movies' && <MoviesContainer />}
-            {navigation === 'Series' && <SeriesContainer searchParams={searchParams} />}
-            {navigation === 'Suggestions' && <div>Suggestions</div>}
-            {navigation === 'Favorites' && <div>Favorites</div>}
-            {navigation === 'Collections' && <div>Collections</div>}
-            {navigation === 'Genres' && <div>Genres</div>}
+            {navigation === 'movies' && <MoviesContainer />}
+            {navigation === 'series' && <SeriesContainer searchParams={searchParams} />}
+            {navigation === 'suggestions' && <div>Suggestions</div>}
+            {navigation === 'favorites' && <div>Favorites</div>}
+            {navigation === 'collections' && <div>Collections</div>}
+            {navigation === 'genres' && <div>Genres</div>}
             {selectedSeries && <Series series={selectedSeries} />}
         </div>
     );

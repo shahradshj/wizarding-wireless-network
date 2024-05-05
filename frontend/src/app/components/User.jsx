@@ -49,8 +49,8 @@ const User = ({ searchParams }) => {
 
     const handleSignOut = () => {
         console.log('Signing out:', userName);
-        console.log(otherParams)
         router.replace(`?${otherParams}`);
+        router.refresh();
     };
 
     return (
@@ -60,6 +60,8 @@ const User = ({ searchParams }) => {
                 type="text"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
+                onSubmit={(e) => { e.preventDefault(); console.log("on submit", e); handleSignIn(); }}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSignIn(); } }}
                 placeholder="Enter username"
             />}
             {!searchParams.userId && <button onClick={handleSignUp} style={{ margin: '5px', color: 'white' }}>Sign Up</button>}

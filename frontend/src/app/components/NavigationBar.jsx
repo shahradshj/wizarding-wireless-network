@@ -14,8 +14,9 @@ function NavigationBar({ searchParams }) {
     }}>
       {navOptions.map(option => (
         <Link
-          href={`/?navigation=${option}` + (otherParams ? `&${otherParams}` : '')}
+          href={`/?navigation=${option.toLowerCase()}` + (otherParams ? `&${otherParams}` : '')}
           key={option}
+          scroll={true}
           style={{ color: '#fff', textDecoration: 'none' }}>
           {option}
         </Link>

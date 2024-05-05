@@ -9,6 +9,7 @@ export default function Home({ searchParams }) {
       backgroundSize: 'cover',
       backgroundAttachment: 'fixed',
       backgroundRepeat: 'no-repeat',
+      backgroundPosition: '53% 20%',
       justifyContent: 'center',
       width: '100vw',
       minHeight: '100vh',

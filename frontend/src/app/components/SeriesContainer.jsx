@@ -10,7 +10,7 @@ export default async function SeriesContainer({ searchParams }) {
     return (
         <div className='movie-series-container'>
             {series && series.map(aSeries => (
-                <Link key={aSeries.id} scroll={false} href={`/?navigation=${aSeries.id}` + (otherParams ? `&${otherParams}` : '')}>
+                <Link key={aSeries.id} scroll={true} href={`/?navigation=${aSeries.id}` + (otherParams ? `&${otherParams}` : '')}>
                     <Series series={aSeries} />
                 </Link>
             ))}

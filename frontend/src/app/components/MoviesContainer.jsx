@@ -4,11 +4,11 @@ import './tiles.css';
 import { getMovies } from '../helpers/apiHelpers';
 import Movie from './Movie';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
 
 export default async function MoviesContainer() {
     const movies = await getMovies();
+    const searchParams = new URLSearchParams();
+    console.log(searchParams);
     return (
         <div className='movie-series-container'>
             {movies && movies.map(movie => (
