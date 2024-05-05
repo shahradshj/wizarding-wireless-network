@@ -6,11 +6,15 @@ import Series from './Series';
 
 export default async function SeriesContainer({ searchParams }) {
     const series = await getSeries();
-    const otherParams = Object.keys(searchParams).filter(key => key !== 'navigation').map(key => `${key}=${searchParams[key]}`).join('&');
+    const params = new URLSearchParams(searchParams);
+    const setNav = (id) => {
+        params.set('navigation', id);
+        return '?' + params;
+      }
     return (
         <div className='movie-series-container'>
             {series && series.map(aSeries => (
-                <Link key={aSeries.id} scroll={true} href={`/?navigation=${aSeries.id}` + (otherParams ? `&${otherParams}` : '')}>
+                <Link key={aSeries.id} scroll={true} href={setNav(aSeries.id)}>
                     <Series series={aSeries} />
                 </Link>
             ))}

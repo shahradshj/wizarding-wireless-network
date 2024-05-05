@@ -7,7 +7,7 @@ import { addUser, getUserId, getUserName } from '../helpers/apiHelpers';
 
 const User = ({ searchParams }) => {
     const router = useRouter();
-    const otherParams = Object.keys(searchParams).filter(key => key !== 'userId').map(key => `${key}=${searchParams[key]}`).join('&');
+    const params = new URLSearchParams(searchParams);
     const [userName, setUserName] = useState('');
 
     useEffect(() => {
@@ -17,7 +17,8 @@ const User = ({ searchParams }) => {
                     setUserName(name);
                 }
                 else {
-                    router.replace(`?${otherParams}`);
+                    params.delete('userId');
+                    router.replace(`?${params}`);
                 }
             }).catch(console.error);
         }
@@ -28,7 +29,8 @@ const User = ({ searchParams }) => {
         try {
             const id = await addUser(userName);
             if (id) {
-                router.replace(`?userId=${id}` + (otherParams ? `&${otherParams}` : ''));
+                params.set('userId', id);
+                router.replace(`?${params}`);
             }
         } catch (error) {
             console.error('Error during sign up:', error);
@@ -40,7 +42,8 @@ const User = ({ searchParams }) => {
         try {
             const id = await getUserId(userName);
             if (id) {
-                router.replace(`?userId=${id}` + (otherParams ? `&${otherParams}` : ''));
+                params.set('userId', id);
+                router.replace(`?${params}`);
             }
         } catch (error) {
             console.error('Error during sign in:', error);
@@ -49,7 +52,8 @@ const User = ({ searchParams }) => {
 
     const handleSignOut = () => {
         console.log('Signing out:', userName);
-        router.replace(`?${otherParams}`);
+        params.delete('userId');
+        router.replace(`?${params}`);
         router.refresh();
     };
 

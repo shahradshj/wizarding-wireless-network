@@ -3,7 +3,11 @@ import Link from 'next/link';
 
 function NavigationBar({ searchParams }) {
   const navOptions = ['Movies', 'Suggestions', 'Series', 'Favorites', 'Collections', 'Genres'];
-  const otherParams = Object.keys(searchParams).filter(key => key !== 'navigation').map(key => `${key}=${searchParams[key]}`).join('&');
+  const params = new URLSearchParams(searchParams);
+  const setNav = (option) => {
+    params.set('navigation', option.toLowerCase());
+    return '?' + params;
+  }
   return (
     <nav style={{
       display: 'flex',
@@ -14,7 +18,7 @@ function NavigationBar({ searchParams }) {
     }}>
       {navOptions.map(option => (
         <Link
-          href={`/?navigation=${option.toLowerCase()}` + (otherParams ? `&${otherParams}` : '')}
+          href={`${setNav(option)}`}
           key={option}
           scroll={true}
           style={{ color: '#fff', textDecoration: 'none' }}>

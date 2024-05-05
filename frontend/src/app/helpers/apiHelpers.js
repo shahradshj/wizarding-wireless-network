@@ -63,3 +63,13 @@ export async function getSeriesById(id) {
     console.error("Error fetching series by id: ", error);
   }
 }
+
+export async function getWatchHistory(userId, videoId) {
+  try {
+    console.log("Fetching watch history for", userId, videoId);
+    const response = await fetch(`${BASE_URL}/user/${userId}/${videoId}`, {cache: "no-store"});
+    return parseInt(await response.text());
+  } catch (error) {
+    console.error("Error fetching watch history: ", error);
+  }
+}
