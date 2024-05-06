@@ -41,6 +41,7 @@ export async function getMovies() {
     return response.json();
   } catch (error) {
     console.error("Error fetching movies: ", error);
+    return null;
   }
 }
 
@@ -51,6 +52,7 @@ export async function getSeries() {
     return response.json();
   } catch (error) {
     console.error("Error fetching series: ", error);
+    return null;
   }
 }
 
@@ -61,15 +63,41 @@ export async function getSeriesById(id) {
     return response.json();
   } catch (error) {
     console.error("Error fetching series by id: ", error);
+    return null;
   }
 }
 
 export async function getWatchHistory(userId, videoId) {
   try {
     console.log("Fetching watch history for", userId, videoId);
-    const response = await fetch(`${BASE_URL}/user/${userId}/${videoId}`, {cache: "no-store"});
+    const response = await fetch(`${BASE_URL}/user/${userId}/${videoId}`, { cache: "no-store" });
     return parseInt(await response.text());
   } catch (error) {
     console.error("Error fetching watch history: ", error);
+    return 0;
+  }
+}
+
+export async function setWatchHistory(userId, videoId, time) {
+  try {
+    console.debug("Setting watch history for", userId, videoId, time);
+    const response = await fetch(`${BASE_URL}/user/${userId}/${videoId}/${time}`, {
+      method: "put",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error setting watch history: ", error);
+    return false;
+  }
+}
+
+export async function getVideoInfo(videoId) {
+  try {
+    console.log("Fetching video info for", videoId);
+    const response = await fetch(`${BASE_URL}/info/${videoId}`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching video info: ", error);
+    return null;
   }
 }

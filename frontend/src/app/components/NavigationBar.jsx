@@ -5,9 +5,11 @@ function NavigationBar({ searchParams }) {
   const navOptions = ['Movies', 'Suggestions', 'Series', 'Favorites', 'Collections', 'Genres'];
   const params = new URLSearchParams(searchParams);
   const setNav = (option) => {
-    params.set('navigation', option.toLowerCase());
-    return '?' + params;
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('navigation', option.toLowerCase());
+    return '?' + newParams;
   }
+
   return (
     <nav style={{
       display: 'flex',
@@ -21,11 +23,13 @@ function NavigationBar({ searchParams }) {
           href={`${setNav(option)}`}
           key={option}
           scroll={true}
-          style={{ color: '#fff', textDecoration: 'none' }}>
+          style={{
+            color: '#fff', padding: '5px', border: '1px solid', borderRadius: '5px',
+            borderColor: (option.toLocaleLowerCase() === params.get('navigation') ? 'white' : 'rgba(0,0,0,0)')
+          }}>
           {option}
         </Link>
-      ))
-      }
+      ))}
     </nav >
   );
 }

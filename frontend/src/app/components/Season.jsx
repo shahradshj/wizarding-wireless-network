@@ -11,8 +11,6 @@ export default async function Season({ season, searchParams, watchHistory }) {
     const params = new URLSearchParams(searchParams);
     const userIdParam = params.has('userId') ? '?' + new URLSearchParams({ "userId": params.get("userId") }) : '';
 
-    console.log("watchHistory", watchHistory, watchHistory?.season, season['season']);
-
     return (
         <div>
             <h2 className="season-name" style={watchHistory?.season === season.season ? LastWatchedSeasonStyle : {}}>{`Season ${season.season}`}</h2>

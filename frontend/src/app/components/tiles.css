@@ -66,3 +66,30 @@
     font-size: 18px;
     text-align: center;
 }
+
+.button {
+    color: #ffffff;
+    background-color: hsla(0, 0%, 0%, 0);
+    margin: '5px';
+    padding: '5px';
+    border: none;
+    cursor: pointer;
+}
+
+.video-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: black;
+    width: 80vw;
+    height: auto;
+    max-width: 100%;
+    max-width: 100%;
+}
+
+.video-player {
+    width: 80%;
+    height: auto;
+}
