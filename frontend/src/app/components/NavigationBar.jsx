@@ -9,28 +9,25 @@ function NavigationBar({ searchParams }) {
     newParams.set('navigation', option.toLowerCase());
     return '?' + newParams;
   }
-
+  
   return (
-    <nav style={{
-      display: 'flex',
-      justifyContent: 'space-around',
-      padding: '20px',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      color: '#fff'
-    }}>
-      {navOptions.map(option => (
-        <Link
-          href={`${setNav(option)}`}
-          key={option}
-          scroll={true}
-          style={{
-            color: '#fff', padding: '5px', border: '1px solid', borderRadius: '5px',
-            borderColor: (option.toLocaleLowerCase() === params.get('navigation') ? 'white' : 'rgba(0,0,0,0)')
-          }}>
-          {option}
-        </Link>
-      ))}
-    </nav >
+    <nav className="navbar">
+      {navOptions.map(option => {
+
+        const linkClass = `nav-link ${option.toLocaleLowerCase() === params.get('navigation') ? 'active' : 'inactive'}`;
+
+        return (
+          <Link
+            href={`${setNav(option)}`}
+            key={option}
+            scroll={true}
+            className={linkClass}
+          >
+            {option}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
 

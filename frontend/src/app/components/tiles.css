@@ -67,13 +67,15 @@
     text-align: center;
 }
 
-.button {
-    color: #ffffff;
-    background-color: hsla(0, 0%, 0%, 0);
-    margin: '5px';
-    padding: '5px';
-    border: none;
-    cursor: pointer;
+.last-watched {
+    width: 100px;
+    margin: 0;
+    padding: 10px;
+    flex: 0 auto;
+    background-color: rgba(0, 0, 0, 0);
+    text-align: center;
+    color: white;
+    font-size: large;
 }
 
 .video-component {
@@ -92,4 +94,51 @@
 .video-player {
     width: 80%;
     height: auto;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.nav-link {
+    color: #fff;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+.nav-link.active {
+    border-color: white;
+}
+
+.nav-link.inactive {
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.user-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: right;
+}
+
+.user-input {
+    width: 150px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.user-paragraph {
+    color: white;
+    /* background-color: rgba(0, 0, 0, 0); */
+}
+
+.user-button {
+    margin: 5px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0);
 }

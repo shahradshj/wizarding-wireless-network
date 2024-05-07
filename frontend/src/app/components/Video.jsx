@@ -22,8 +22,11 @@ function UpdateWatchHistory(userId, videoId, videoRef) {
     });
 }
 
-export default function Video({ videoId, videoTime, userId }) {
+export default function Video({ videoId, videoTime, userId, videoName }) {
     const videoUrl = `${BASE_URL}/video/${videoId}`;
+    if (videoName) {
+        document.title = videoName;
+    }
 
     const videoRef = useRef(null);
     useEffect(() => {

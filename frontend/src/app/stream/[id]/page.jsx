@@ -4,6 +4,7 @@ import Head from 'next/head'
 
 import './StreamPage.css';
 import Video from '@/app/components/Video';
+import User from '@/app/components/User';
 import { getWatchHistory, getVideoInfo, setWatchHistory } from "@/app/helpers/apiHelpers";
 
 function VideoInfoToName(info) {
@@ -43,11 +44,9 @@ export default async function StreamPage({ params, searchParams, }) {
 
     return (
         <div className='stream-page'>
-            <Head>
-                <title>My new cool app</title>
-            </Head>
-            <h1 style={{padding: '10px'}}>{title}</h1>
-            <Video videoId={videoId} videoTime={videoTime} userId={urlSearchParams.get('userId')} />
+            <User searchParams={searchParams} />
+            <h1 style={{ padding: '10px', color: 'white' }}>{title}</h1>
+            <Video videoId={videoId} videoTime={videoTime} userId={urlSearchParams.get('userId')} videoName={title} />
         </div>
     );
 }
