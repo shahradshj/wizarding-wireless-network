@@ -54,6 +54,9 @@ CREATE TABLE episodes (
     FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE,
     FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE
 );
+-- Create an index on series_id column
+DROP INDEX IF EXISTS idx_series_id_for_episodes;
+CREATE INDEX idx_series_id_for_episodes ON episodes (series_id);
 
 -- @block create users table
 -- Drop the users table if it already exists
@@ -80,3 +83,28 @@ CREATE TABLE watch_history (
     FOREIGN KEY (video_id) REFERENCES video_files(id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, video_id)
 );
+-- Create an index on user_id column
+CREATE INDEX idx_user_id_for_watch_histry ON watch_history (user_id);
+
+-- @block create favorites table
+-- Drop the favorites table if it already exists
+DROP TABLE IF EXISTS favorites;
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
+-- Create the favorites table
+-- Drop the favorites table if it already exists
+DROP TABLE IF EXISTS favorites;
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
+-- Create the favorites table
+CREATE TABLE favorites (
+    user_id VARCHAR(32),
+    video_id VARCHAR(32),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (video_id) REFERENCES video_files(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, video_id)
+);
+-- Create an index on user_id column
+-- Drop the index on user_id column if it already exists
+DROP INDEX IF EXISTS idx_user_id_for_favorites;
+CREATE INDEX idx_user_id_for_favorites ON favorites (user_id);

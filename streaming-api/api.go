@@ -30,17 +30,20 @@ func main() {
 	router.HandleFunc("/movies/{movie_id}", getMovie).Methods("GET")
 	router.HandleFunc("/series", getSeries).Methods("GET")
 	router.HandleFunc("/series/{series_id}", getSeriesEpisodes).Methods("GET")
-	router.HandleFunc("/video/{id}", getVideoFile).Methods("GET")
-	router.HandleFunc("/info/{id}", getVideoInfo).Methods("GET")
-	router.HandleFunc("/poster/{id}", getPosterFile).Methods("GET")
-	router.HandleFunc("/user/{userName}", getUserId).Methods("GET")
-	router.HandleFunc("/user/{userName}", addUser).Methods("POST")
-	router.HandleFunc("/user/{userId}/{videoId}", getWatchHistory).Methods("GET")
-	router.HandleFunc("/user/{userId}/{videoId}/{timestamps}", addWatchHistory).Methods("PUT")
+	router.HandleFunc("/videos/{id}", getVideoFile).Methods("GET")
+	router.HandleFunc("/infos/{id}", getVideoInfo).Methods("GET")
+	router.HandleFunc("/posters/{id}", getPosterFile).Methods("GET")
+	router.HandleFunc("/users/{userName}", getUserId).Methods("GET")
+	router.HandleFunc("/users/{userName}", addUser).Methods("POST")
+	router.HandleFunc("/users/{userId}/{videoId}", getWatchHistory).Methods("GET")
+	router.HandleFunc("/users/{userId}/{videoId}/{timestamps}", addWatchHistory).Methods("PUT")
+	router.HandleFunc("/favorites/{userId}", getFavorites).Methods("GET")
+	router.HandleFunc("/favorites/{userId}/{videoId}", addFavorite).Methods("POST")
+	router.HandleFunc("/favorites/{userId}/{videoId}", deleteFavorite).Methods("DELETE")
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "PUT", "POST"},
+		AllowedMethods: []string{"GET", "PUT", "POST", "DELETE"},
 		// AllowedMethods: []string{"GET"},
 	}).Handler(router)
 
@@ -276,6 +279,47 @@ func addWatchHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = insertWatchHistory(userID, videoID, timestampInt)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	w.Write([]byte("OK"))
+}
+
+func getFavorites(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID := params["userId"]
+	log.Printf("Getting favorites for: %s\n", userID)
+
+	favorites, err := queryFavorites(userID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, favorites)
+}
+
+func addFavorite(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID := params["userId"]
+	videoID := params["videoId"]
+	log.Printf("Adding favorite for: %s %s\n", userID, videoID)
+
+	err := insertFavorite(userID, videoID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	w.Write([]byte("OK"))
+}
+
+func deleteFavorite(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID := params["userId"]
+	videoID := params["videoId"]
+	log.Printf("Deleting favorite for: %s %s\n", userID, videoID)
+
+	err := removeFavorite(userID, videoID)
 	if err != nil {
 		handleError(w, err)
 		return
