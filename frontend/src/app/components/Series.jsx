@@ -35,10 +35,10 @@ export default async function Series({ series, urlSearchParams, isFavorited = fa
                     {urlSearchParams?.has('userId') && <FavoriteButton userId={urlSearchParams.get('userId')} videoId={series.id} initialIsFavorited={isFavorited} />}
                 </div>
             </div>
-            {lastSeenEpisode && <div className="w-48 relative mx-5 my-5 bg-green-700 bg-opacity-30 flex justify-center text-center">
+            {lastSeenEpisode && <div className="w-48 mt-2 mb-5 relative flex justify-center text-center">
                 <Link
                     href={lastSeenEpisodeUrl} key={lastSeenEpisode.id} rel="noopener noreferrer" target="_blank">
-                    <p className='content-center mx-2'>Continue</p>
+                    <p className='content-center mx-2 bg-green-700 bg-opacity-30'>Continue</p>
                     <Episode episode={lastSeenEpisode}  />
                 </Link>
             </div>}
