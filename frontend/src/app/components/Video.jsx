@@ -38,29 +38,6 @@ export default function Video({ videoId, videoTime, userId, videoName }) {
 
     let updateWatchHistoryTimer = null;
 
-    // useEffect(() => {
-    //     const keyDownHandler = (e) => {
-    //         console.log(`You pressed ${e.code}.`, videoRef);
-    //         if (!videoRef || !videoRef.current) {
-    //             return;
-    //         }
-    //         if (e.code === 'Space') {
-    //             console.log('Toggling play/pause', videoRef.current.paused);
-    //             if (videoRef.current.paused) {
-    //                 videoRef.current.play();
-    //             } else {
-    //                 videoRef.current.pause();
-    //             }
-    //         }
-    //         if (e.code === 'ArrowLeft') {
-    //             console.log('Going back 10 seconds', videoRef.current.currentTime);
-    //             videoRef.current.currentTime -= 10;
-    //             console.log('New time', videoRef.current.currentTime);
-    //         }
-    //     };
-    //     document.addEventListener('keydown', keyDownHandler);
-    // }, []);
-
     return (
         <div className='video-component'>
             <video className='video-player' id="video" ref={videoRef} controls
