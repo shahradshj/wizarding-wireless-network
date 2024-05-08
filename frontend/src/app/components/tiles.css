@@ -1,0 +1,144 @@
+.title {
+    width: 200px;
+    margin: 20px;
+    position: relative;
+}
+
+.poster {
+    width: 100%;
+    height: auto;
+}
+
+.info {
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    width: 100%;
+    padding: 10px;
+}
+
+.name {
+    margin: 0;
+    font-size: 16px;
+}
+
+.year {
+    margin: 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.movie-series-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.season-name {
+    font-size: 26px;
+    color: #fff;
+    width: 100vw;
+    max-width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.episode-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-gap: 10px;
+    padding: 20px;
+}
+
+.episode {
+    width: 100px;
+    margin: 0;
+    padding: 10px;
+    flex: 0 auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.episode-name {
+    font-size: 18px;
+    text-align: center;
+}
+
+.last-watched {
+    width: 100px;
+    margin: 0;
+    padding: 10px;
+    flex: 0 auto;
+    background-color: rgba(0, 0, 0, 0);
+    text-align: center;
+    color: white;
+    font-size: large;
+}
+
+.video-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: black;
+    width: 80vw;
+    height: auto;
+    max-width: 100%;
+    max-width: 100%;
+}
+
+.video-player {
+    width: 80%;
+    height: auto;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.nav-link {
+    color: #fff;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+.nav-link.active {
+    border-color: white;
+}
+
+.nav-link.inactive {
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.user-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: right;
+}
+
+.user-input {
+    width: 150px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.user-paragraph {
+    color: white;
+    /* background-color: rgba(0, 0, 0, 0); */
+}
+
+.user-button {
+    margin: 5px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0);
+}
