@@ -1,11 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 
-function NavigationBar({ searchParams }) {
+function NavigationBar({ urlSearchParams }) {
   const navOptions = ['Movies', 'Suggestions', 'Series', 'Favorites', 'Collections', 'Genres'];
-  const params = new URLSearchParams(searchParams);
   const setNav = (option) => {
-    const newParams = new URLSearchParams(searchParams);
+    const newParams = new URLSearchParams(urlSearchParams);
     newParams.set('navigation', option.toLowerCase());
     return '?' + newParams;
   }
@@ -14,7 +13,7 @@ function NavigationBar({ searchParams }) {
     <nav className="navbar">
       {navOptions.map(option => {
 
-        const linkClass = `nav-link ${option.toLocaleLowerCase() === params.get('navigation') ? 'active' : 'inactive'}`;
+        const linkClass = `nav-link ${option.toLocaleLowerCase() === urlSearchParams.get('navigation') ? 'active' : 'inactive'}`;
 
         return (
           <Link

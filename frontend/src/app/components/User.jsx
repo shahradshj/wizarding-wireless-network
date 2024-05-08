@@ -7,18 +7,18 @@ import { addUser, getUserId, getUserName } from '../helpers/apiHelpers';
 
 const User = ({ searchParams }) => {
     const router = useRouter();
-    const params = new URLSearchParams(searchParams);
+    const urlSearchParams = new URLSearchParams(searchParams);
     const [userName, setUserName] = useState('');
 
     useEffect(() => {
-        if (searchParams.userId) {
-            getUserName(searchParams.userId).then(name => {
+        if (urlSearchParams?.has('userId')) {
+            getUserName(urlSearchParams.get('userId')).then(name => {
                 if (name) {
                     setUserName(name);
                 }
                 else {
-                    params.delete('userId');
-                    router.replace(`?${params}`);
+                    urlSearchParams.delete('userId');
+                    router.replace(`?${urlSearchParams}`);
                 }
             }).catch(console.error);
         }
@@ -29,8 +29,8 @@ const User = ({ searchParams }) => {
         try {
             const id = await addUser(userName);
             if (id) {
-                params.set('userId', id);
-                router.replace(`?${params}`);
+                urlSearchParams.set('userId', id);
+                router.replace(`?${urlSearchParams}`);
             }
         } catch (error) {
             console.error('Error during sign up:', error);
@@ -42,8 +42,8 @@ const User = ({ searchParams }) => {
         try {
             const id = await getUserId(userName);
             if (id) {
-                params.set('userId', id);
-                router.replace(`?${params}`);
+                urlSearchParams.set('userId', id);
+                router.replace(`?${urlSearchParams}`);
             }
         } catch (error) {
             console.error('Error during sign in:', error);
@@ -52,14 +52,14 @@ const User = ({ searchParams }) => {
 
     const handleSignOut = () => {
         console.log('Signing out:', userName);
-        params.delete('userId');
-        router.replace(`?${params}`);
+        urlSearchParams.delete('userId');
+        router.replace(`?${urlSearchParams}`);
         router.refresh();
     };
 
     return (
         <div className="user-container">
-            {!searchParams.userId && (
+            {!urlSearchParams.has('userId') && (
                 <input
                     className="user-input"
                     type="text"
@@ -79,17 +79,17 @@ const User = ({ searchParams }) => {
                     placeholder="Enter username"
                 />
             )}
-            {!searchParams.userId && (
+            {!urlSearchParams.has('userId') && (
                 <button className="user-button" onClick={handleSignUp}>
                     Sign Up
                 </button>
             )}
-            {!searchParams.userId && (
+            {!urlSearchParams.has('userId') && (
                 <button className="user-button" onClick={handleSignIn}>
                     Sign In
                 </button>
             )}
-            {searchParams.userId && (
+            {urlSearchParams.has('userId') && (
                 <p className='user-paragraph'>
                     Welcome {userName}!
                     <button className="user-button" onClick={handleSignOut}>

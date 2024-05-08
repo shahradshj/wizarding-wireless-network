@@ -5,12 +5,10 @@ import { getMovies, getFavorites } from '../helpers/apiHelpers';
 import Movie from './Movie';
 
 
-export default async function MoviesContainer({ searchParams }) {
-    const params = new URLSearchParams(searchParams);
-    const userIdParam = params.has('userId') ? '?' + new URLSearchParams({ "userId": params.get("userId") }) : '';
+export default async function MoviesContainer({ movies, urlSearchParams }) {
+    const userIdParam = urlSearchParams.has('userId') ? '?' + new URLSearchParams({ "userId": urlSearchParams.get("userId") }) : '';
     
-    const movies = await getMovies();
-    const favorites = params.has('userId') ? new Set(await getFavorites(params.get('userId'))) : null;
+    const favorites = urlSearchParams.has('userId') ? new Set(await getFavorites(urlSearchParams.get('userId'))) : null;
 
     return (
         <div className='movie-series-container'>
@@ -18,7 +16,7 @@ export default async function MoviesContainer({ searchParams }) {
                 <Link key={movie.id}
                     href={`/stream/${movie.id}${userIdParam}`}
                     rel="noopener noreferrer" target='_blank'>
-                    <Movie movie={movie} isFavorited={favorites?.has(movie.id)}/>
+                    <Movie urlSearchParams={urlSearchParams} movie={movie} isFavorited={favorites?.has(movie.id)}/>
                 </Link>
             ))}
         </div>

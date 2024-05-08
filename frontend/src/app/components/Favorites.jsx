@@ -1,68 +1,46 @@
 import Link from "next/link";
 
-import Movie from "./Movie";
-import Series from "./Series";
+import MoviesContainer from "./MoviesContainer";
+import SeriesContainer from "./SeriesContainer";
 import { getFavorites, getMovies, getSeries } from "../helpers/apiHelpers";
 
-export default async function Favorites({ searchParams }) {
-    const params = new URLSearchParams(searchParams);
-    const userId = params.get('userId');
-
+export default async function Favorites({ urlSearchParams }) {
+    const userId = urlSearchParams.get('userId');
 
     let favorites = null;
-    let series = null;
     let movies = null;
+    let series = null;
 
     if (userId) {
-        [favorites, series, movies] = await Promise.all([
-            getFavorites(userId),
-            getSeries(),
-            getMovies()
-        ]);
-        
-        favorites = new Set(favorites);
-    }
+        try {
+            [favorites, movies, series] = await Promise.all([
+                getFavorites(userId),
+                getMovies(),
+                getSeries()
+            ]);
 
-    const setNavForSeries = (id) => {
-        const newParams = new URLSearchParams(params);
-        newParams.set('navigation', id);
-        return '?' + newParams;
+            favorites = new Set(favorites);
+            movies = movies.filter((movie) => favorites.has(movie.id));
+            series = series.filter((aSeries) => favorites.has(aSeries.id));
+        } catch (error) {
+            console.error("Error fetching favorites, series, and movies:", error);
+            // Handle the error here, e.g. show an error message to the user
+        }
     }
 
     return (
-        <div className="flex">
-            {!userId && <div>Please log in to see your favorites</div>}
-            {userId && <div>Your favorites</div>}
+        <div>
+            {!userId && <div className='tabs-text'>Please log in to see your favorites</div>}
             {userId &&
-                <div className="flex">
-                    <div className="flex-column">
-                        <div>Series</div>
-                        {series ? series.map((aSeries) => {
-                            if (favorites.has(aSeries.id)) {
-                                return (
-                                    <Link key={aSeries.id} scroll={true} href={setNavForSeries(aSeries.id)}>
-                                        <Series series={aSeries} isFavorited={true}/>
-                                    </Link>
-                                );
-                            }
-                        }) : 
-                        <div>No favorite series</div>}
-                    </div>
-                    <div className="flex-column">
-                        <div>Movies</div>
-                        {movies ? movies.map((movie) => {
-                            if (favorites.has(movie.id)) {
-                                return (
-                                    <Link key={movie.id}
-                                        href={`/stream/${movie.id}?${new URLSearchParams({ userId: userId })}`}
-                                        rel="noopener noreferrer" target='_blank'>
-                                        <Movie movie={movie} isFavorited={true}/>
-                                    </Link>
-                                );
-                            }
-                        }) : 
-                        <div>No favorite movies</div>}
-                    </div>
+                <div>
+                    <p className='tabs-text'>Movies</p>
+                    {movies?.length > 0 ?
+                        <MoviesContainer movies={movies} urlSearchParams={urlSearchParams} /> :
+                        <p className="tabs-text">No favorite movies</p>}
+                    <p className='tabs-text'>Series</p>
+                    {series?.length > 0 ?
+                        <SeriesContainer series={series} urlSearchParams={urlSearchParams} /> :
+                        <p className="tabs-text">No favorite series</p>}
                 </div>}
         </div>
     );

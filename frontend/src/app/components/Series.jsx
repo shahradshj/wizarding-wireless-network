@@ -9,9 +9,7 @@ import { getWatchHistory } from '../helpers/apiHelpers';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export default async function Series({ series, searchParams, isFavorited = false}) {
-
-    const params = new URLSearchParams(searchParams);
+export default async function Series({ series, urlSearchParams, isFavorited = false }) {
 
     const EpisodesBySeason = series.episodes?.reduce((acc, episode) => {
         acc[episode.season] = acc[episode.season] || { 'season': episode.season, 'episodes': [] };
@@ -19,13 +17,13 @@ export default async function Series({ series, searchParams, isFavorited = false
         return acc;
     }, {});
     let watchHistory = 0;
-    if (EpisodesBySeason && params.has('userId')) {
-        watchHistory = await getWatchHistory(params.get('userId'), series.id);
+    if (EpisodesBySeason && urlSearchParams.has('userId')) {
+        watchHistory = await getWatchHistory(urlSearchParams.get('userId'), series.id);
     }
     const lastSeenSeason = Math.floor(watchHistory / 100);
     const lastSeenEpisodeNumber = watchHistory % 100;
     const lastSeenEpisode = EpisodesBySeason ? EpisodesBySeason[lastSeenSeason]?.episodes.find((episode) => episode.episode === lastSeenEpisodeNumber) : null;
-    const lastSeenEpisodeUrl = lastSeenEpisode ? `/stream/${lastSeenEpisode?.id}?${new URLSearchParams({ userId: params.get('userId') })}` : null;
+    const lastSeenEpisodeUrl = lastSeenEpisode ? `/stream/${lastSeenEpisode?.id}?${new URLSearchParams({ userId: urlSearchParams.get('userId') })}` : null;
 
     return (
         <div>
@@ -34,15 +32,18 @@ export default async function Series({ series, searchParams, isFavorited = false
                 <div className="info">
                     <h2 className="name">{series.name}</h2>
                     <p className="year">{`(${series.start_year} - ${series.end_year !== 0 ? series.end_year : ''})`}</p>
-                    <FavoriteButton videoId={series.id} initialIsFavorited={isFavorited} />
+                    {urlSearchParams?.has('userId') && <FavoriteButton userId={urlSearchParams.get('userId')} videoId={series.id} initialIsFavorited={isFavorited} />}
                 </div>
             </div>
-            {lastSeenEpisode && <Link className="episode-container" href={lastSeenEpisodeUrl} key={lastSeenEpisode.id} rel="noopener noreferrer" target="_blank">
-                    <p className='last-watched'>Continue</p>
-                    <Episode episode={lastSeenEpisode} watchHistory={{ 'season': lastSeenSeason, 'episode': lastSeenEpisodeNumber }} />
-                </Link>}
+            {lastSeenEpisode && <div className="w-48 relative mx-5 my-5 bg-green-700 bg-opacity-30 flex justify-center text-center">
+                <Link
+                    href={lastSeenEpisodeUrl} key={lastSeenEpisode.id} rel="noopener noreferrer" target="_blank">
+                    <p className='content-center mx-2'>Continue</p>
+                    <Episode episode={lastSeenEpisode}  />
+                </Link>
+            </div>}
             {EpisodesBySeason && Object.keys(EpisodesBySeason).map((season) => (
-                <Season key={season} searchParams={searchParams} watchHistory={{ 'season': lastSeenSeason, 'episode': lastSeenEpisodeNumber }} season={EpisodesBySeason[season]} />
+                <Season key={season} urlSearchParams={urlSearchParams} watchHistory={{ 'season': lastSeenSeason, 'episode': lastSeenEpisodeNumber }} season={EpisodesBySeason[season]} />
             ))}
         </div>
     );

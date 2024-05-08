@@ -12,5 +12,13 @@
             "name": "wizarding-wireless-network",
             "database": "${workspaceFolder:wizarding-wireless-network}/movie-database/database.db"
         }
-    ]
+    ],
+    "tailwindCSS.includeLanguages": {
+        "html": "html",
+        "javascript": "javascript",
+        "css": "css"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
+    }
 }
