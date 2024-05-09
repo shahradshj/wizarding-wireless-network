@@ -22,7 +22,7 @@ const FavoriteButton = ({ userId, videoId, initialIsFavorited }) => {
             }
         }
         setIsFavorited(!isFavorited);
-        window.location.reload();
+        // window.location.reload();
     };
 
     useEffect(() => {

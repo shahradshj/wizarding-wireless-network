@@ -9,25 +9,18 @@ import Favorites from './Favorites';
 
 import { getMovies, getSeries, getSeriesById, getFavorites } from '../helpers/apiHelpers';
 
-async function getMoviesSeriesFavorites(userId) {
-    try {
-        const [movies, series, favorites] = await Promise.all([
-            getMovies(),
-            getSeries(),
-            userId ? new Set(await getFavorites(userId)) : null,
-        ]);
-        return [movies, series, favorites];
-    } catch (error) {
-        console.error(error);
-        return [null, null, null];
-    }
-}
-
+export const dynamic = 'force-dynamic';
 
 export default async function App({ searchParams, }) {
     const urlSearchParams = new URLSearchParams(searchParams);
     const navigation = urlSearchParams.get('navigation')?.toLowerCase() || '';
-    const [movies, series, favorites] = await getMoviesSeriesFavorites();
+    const [movies, series, favorites] = await Promise.all([
+        getMovies(),
+        getSeries(),
+        urlSearchParams.has('userId') ? getFavorites(urlSearchParams.get('userId')) : null,
+    ]);
+    const favoritesSet = new Set(favorites);
+
     let selectedSeries = null;
     if (series?.some((aSeries) => aSeries.id === navigation)) {
         selectedSeries = await getSeriesById(navigation);
@@ -39,10 +32,10 @@ export default async function App({ searchParams, }) {
             {navigation === 'movies' && <MoviesContainer movies={movies} urlSearchParams={urlSearchParams} />}
             {navigation === 'series' && <SeriesContainer series={series} urlSearchParams={urlSearchParams} />}
             {navigation === 'suggestions' && <div className='tabs-text'>Suggestions</div>}
-            {navigation === 'favorites' && <Favorites urlSearchParams={urlSearchParams} />}
+            {navigation === 'favorites' && <Favorites urlSearchParams={urlSearchParams} movies={movies} series={series} />}
             {navigation === 'collections' && <div className='tabs-text'>Collections</div>}
             {navigation === 'genres' && <div className='tabs-text'>Genres</div>}
-            {selectedSeries && <Series urlSearchParams={urlSearchParams} series={selectedSeries} isFavorited={favorites?.has(selectedSeries.id)} />}
+            {selectedSeries && <Series urlSearchParams={urlSearchParams} series={selectedSeries} isFavorited={favoritesSet.has(selectedSeries.id)} />}
         </div>
     );
 }

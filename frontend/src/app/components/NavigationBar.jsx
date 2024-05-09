@@ -13,14 +13,14 @@ function NavigationBar({ urlSearchParams }) {
     <nav className="navbar">
       {navOptions.map(option => {
 
-        const linkClass = `nav-link ${option.toLocaleLowerCase() === urlSearchParams.get('navigation') ? 'active' : 'inactive'}`;
+        const linkCSSClass = `nav-link ${option.toLocaleLowerCase() === urlSearchParams.get('navigation') ? 'active' : 'inactive'}`;
 
         return (
           <Link
             href={`${setNav(option)}`}
             key={option}
             scroll={true}
-            className={linkClass}
+            className={linkCSSClass}
           >
             {option}
           </Link>

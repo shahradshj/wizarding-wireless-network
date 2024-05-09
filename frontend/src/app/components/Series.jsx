@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 import './tiles.css';
 import Season from './Season';
@@ -7,7 +8,6 @@ import Episode from './Episode';
 import FavoriteButton from './FavoriteButton';
 import { getWatchHistory } from '../helpers/apiHelpers';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default async function Series({ series, urlSearchParams, isFavorited = false }) {
 

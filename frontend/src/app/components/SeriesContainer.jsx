@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import './tiles.css';
 
-import { getSeries, getFavorites } from '../helpers/apiHelpers';
+import { getFavorites } from '../helpers/apiHelpers';
 import Series from './Series';
 
 export default async function SeriesContainer({ series, urlSearchParams }) {

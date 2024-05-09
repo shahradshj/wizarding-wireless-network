@@ -1,11 +1,16 @@
-import React from 'react';
-
-import Head from 'next/head'
 
 import './StreamPage.css';
 import Video from '@/app/components/Video';
 import User from '@/app/components/User';
 import { getWatchHistory, getVideoInfo, setWatchHistory } from "@/app/helpers/apiHelpers";
+
+export async function generateMetadata({ params }) {
+    const videoId = params.id
+    const videoName = VideoInfoToName(await getVideoInfo(videoId));
+    return {
+        title: videoName,
+    }
+}
 
 function VideoInfoToName(info) {
     if (!info || !info.type) {
@@ -46,7 +51,7 @@ export default async function StreamPage({ params, searchParams, }) {
         <div className='stream-page'>
             <User searchParams={searchParams} />
             <h1 style={{ padding: '10px', color: 'white' }}>{title}</h1>
-            <Video videoId={videoId} videoTime={videoTime} userId={urlSearchParams.get('userId')} videoName={title} />
+            <Video videoId={videoId} videoTime={videoTime} userId={urlSearchParams.get('userId')} />
         </div>
     );
 }
