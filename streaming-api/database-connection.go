@@ -207,3 +207,37 @@ func insertWatchHistory(userID string, videoID string, timestamp int) error {
 	}
 	return nil
 }
+
+func insertFavorite(userID string, videoID string) error {
+	_, err := db.Exec("INSERT INTO favorites (user_id, video_id) VALUES (?, ?);", userID, videoID)
+	if err != nil {
+		return fmt.Errorf("error adding favorite: %v", err)
+	}
+	return nil
+}
+
+func removeFavorite(userID string, videoID string) error {
+	_, err := db.Exec("DELETE FROM favorites WHERE user_id = ? AND video_id = ?;", userID, videoID)
+	if err != nil {
+		return fmt.Errorf("error removing favorite: %v", err)
+	}
+	return nil
+}
+
+func queryFavorites(userID string) ([]string, error) {
+	rows, err := db.Query("SELECT video_id FROM favorites WHERE user_id = ?", userID)
+	if err != nil {
+		return nil, fmt.Errorf("error getting favorites: %v", err)
+	}
+	defer rows.Close()
+
+	var favorites []string
+	for rows.Next() {
+		var videoID string
+		if err := rows.Scan(&videoID); err != nil {
+			return nil, fmt.Errorf("error scanning favorites: %v", err)
+		}
+		favorites = append(favorites, videoID)
+	}
+	return favorites, nil
+}

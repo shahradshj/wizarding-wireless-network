@@ -1,9 +1,10 @@
 'use client'
 
+import React, { useRef } from 'react';
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const WATCH_HISTORY_UPDATE_INTERVAL = 5000;
 
-import React, { useRef, useEffect } from 'react';
 
 import './tiles.css';
 
@@ -22,19 +23,10 @@ function UpdateWatchHistory(userId, videoId, videoRef) {
     });
 }
 
-export default function Video({ videoId, videoTime, userId, videoName }) {
-    const videoUrl = `${BASE_URL}/video/${videoId}`;
-    if (videoName) {
-        document.title = videoName;
-    }
+export default function Video({ videoId, videoTime, userId }) {
+    const videoUrl = `${BASE_URL}/videos/${videoId}#t=${videoTime}`;
 
     const videoRef = useRef(null);
-    useEffect(() => {
-        if (videoRef.current) {
-            console.log("Setting video time", videoTime);
-            videoRef.current.currentTime = videoTime;
-        }
-    }, [videoRef]);
 
     let updateWatchHistoryTimer = null;
 

@@ -14,7 +14,7 @@ export async function getUserId(userName) {
 
 export async function getUser(user) {
   console.log("Fetching user for", user);
-  const response = await fetch(`${BASE_URL}/user/${user}`);
+  const response = await fetch(`${BASE_URL}/users/${user}`);
   if (!response.ok) {
     alert("User not found!");
     return null;
@@ -24,7 +24,7 @@ export async function getUser(user) {
 
 export async function addUser(userName) {
   console.log("Adding user", userName);
-  const response = await fetch(`${BASE_URL}/user/${userName}`, {
+  const response = await fetch(`${BASE_URL}/users/${userName}`, {
     method: "POST",
   });
   if (!response.ok) {
@@ -70,7 +70,7 @@ export async function getSeriesById(id) {
 export async function getWatchHistory(userId, videoId) {
   try {
     console.log("Fetching watch history for", userId, videoId);
-    const response = await fetch(`${BASE_URL}/user/${userId}/${videoId}`, { cache: "no-store" });
+    const response = await fetch(`${BASE_URL}/users/${userId}/${videoId}`, { cache: "no-store" });
     return parseInt(await response.text());
   } catch (error) {
     console.error("Error fetching watch history: ", error);
@@ -81,7 +81,7 @@ export async function getWatchHistory(userId, videoId) {
 export async function setWatchHistory(userId, videoId, time) {
   try {
     console.debug("Setting watch history for", userId, videoId, time);
-    const response = await fetch(`${BASE_URL}/user/${userId}/${videoId}/${time}`, {
+    const response = await fetch(`${BASE_URL}/users/${userId}/${videoId}/${time}`, {
       method: "put",
     });
     return response.ok;
@@ -94,10 +94,47 @@ export async function setWatchHistory(userId, videoId, time) {
 export async function getVideoInfo(videoId) {
   try {
     console.log("Fetching video info for", videoId);
-    const response = await fetch(`${BASE_URL}/info/${videoId}`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    const response = await fetch(`${BASE_URL}/infos/${videoId}`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
     return response.json();
   } catch (error) {
     console.error("Error fetching video info: ", error);
     return null;
+  }
+}
+
+export async function getFavorites(userId) {
+  try {
+    console.log("Fetching favorites for", userId);
+    const response = await fetch(`${BASE_URL}/favorites/${userId}`, { cache: "no-store" });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching favorites: ", error);
+    return null;
+  }
+}
+
+export async function addFavorite(userId, videoId) {
+  try {
+    console.log("Adding favorite for", userId, videoId);
+    const response = await fetch(`${BASE_URL}/favorites/${userId}/${videoId}`, {
+      method: "POST",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error adding favorite: ", error);
+    return false;
+  }
+}
+
+export async function removeFavorite(userId, videoId) {
+  try {
+    console.log("Removing favorite for", userId, videoId);
+    const response = await fetch(`${BASE_URL}/favorites/${userId}/${videoId}`, {
+      method: "DELETE",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error removing favorite: ", error);
+    return false;
   }
 }

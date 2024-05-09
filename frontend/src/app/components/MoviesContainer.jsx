@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import './tiles.css';
 
-import { getMovies } from '../helpers/apiHelpers';
+import { getFavorites } from '../helpers/apiHelpers';
 import Movie from './Movie';
 
 
-export default async function MoviesContainer({ searchParams }) {
-    const movies = await getMovies();
-    const params = new URLSearchParams(searchParams);
-    const userIdParam = params.has('userId') ? '?' + new URLSearchParams({ "userId": params.get("userId") }) : '';
+export default async function MoviesContainer({ movies, urlSearchParams }) {
+    const userIdParam = urlSearchParams.has('userId') ? '?' + new URLSearchParams({ "userId": urlSearchParams.get("userId") }) : '';
+    
+    const favorites = urlSearchParams.has('userId') ? new Set(await getFavorites(urlSearchParams.get('userId'))) : null;
 
     return (
         <div className='movie-series-container'>
@@ -16,7 +16,7 @@ export default async function MoviesContainer({ searchParams }) {
                 <Link key={movie.id}
                     href={`/stream/${movie.id}${userIdParam}`}
                     rel="noopener noreferrer" target='_blank'>
-                    <Movie movie={movie} />
+                    <Movie urlSearchParams={urlSearchParams} movie={movie} isFavorited={favorites?.has(movie.id)}/>
                 </Link>
             ))}
         </div>

@@ -7,9 +7,8 @@ const LastWatchedSeasonStyle = {
     backgroundColor: 'rgba(0, 100, 0, 0.3)',
 }
 
-export default async function Season({ season, searchParams, watchHistory }) {
-    const params = new URLSearchParams(searchParams);
-    const userIdParam = params.has('userId') ? '?' + new URLSearchParams({ "userId": params.get("userId") }) : '';
+export default async function Season({ season, urlSearchParams, watchHistory }) {
+    const userIdParam = urlSearchParams.has('userId') ? '?' + new URLSearchParams({ "userId": urlSearchParams.get("userId") }) : '';
 
     return (
         <div>

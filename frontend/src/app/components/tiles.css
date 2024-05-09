@@ -1,6 +1,5 @@
 .title {
     width: 200px;
-    margin: 20px;
     position: relative;
 }
 
@@ -30,10 +29,11 @@
 }
 
 .movie-series-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+    row-gap: 30px;
+    padding: 30px;
 }
 
 .season-name {
@@ -94,6 +94,14 @@
 .video-player {
     width: 80%;
     height: auto;
+}
+
+.tabs-text {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
 }
 
 .navbar {
