@@ -11,33 +11,37 @@ import (
 )
 
 type Movie struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	Year int    `json:"year"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Year        int    `json:"year"`
+	SizeInBytes int64  `json:"size_in_bytes"`
 }
 
 type Series struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	StartYear int       `json:"start_year"`
-	EndYear   int       `json:"end_year"`
-	Episodes  []Episode `json:"episodes"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	StartYear   int       `json:"start_year"`
+	EndYear     int       `json:"end_year"`
+	Episodes    []Episode `json:"episodes"`
+	SizeInBytes int64     `json:"size_in_bytes"`
 }
 
 type Episode struct {
-	ID      string `json:"id"`
-	Season  int    `json:"season"`
-	Episode int    `json:"episode"`
+	ID          string `json:"id"`
+	Season      int    `json:"season"`
+	Episode     int    `json:"episode"`
+	SizeInBytes int64  `json:"size_in_bytes"`
 }
 
-type SeriesEpisode struct {
-	ID        string `json:"id"`
-	SeriesID  string `json:"series_id"`
-	Name      string `json:"name"`
-	StartYear int    `json:"start_year"`
-	EndYear   int    `json:"end_year"`
-	Season    int    `json:"season"`
-	Episode   int    `json:"episode"`
+type EpisodeWithSeriesName struct {
+	ID          string `json:"id"`
+	SeriesID    string `json:"series_id"`
+	Name        string `json:"name"`
+	StartYear   int    `json:"start_year"`
+	EndYear     int    `json:"end_year"`
+	Season      int    `json:"season"`
+	Episode     int    `json:"episode"`
+	SizeInBytes int64  `json:"size_in_bytes"`
 }
 
 type User struct {
@@ -67,7 +71,7 @@ func init() {
 }
 
 func queryMovies() ([]Movie, error) {
-	rows, err := db.Query("SELECT id, title, year FROM movies ORDER BY title ASC")
+	rows, err := db.Query("SELECT id, title, year, sizeInBytes FROM movies ORDER BY title ASC")
 	if err != nil {
 		return nil, fmt.Errorf("error querying movies: %v", err)
 	}
@@ -76,7 +80,7 @@ func queryMovies() ([]Movie, error) {
 	var movies []Movie
 	for rows.Next() {
 		var m Movie
-		if err := rows.Scan(&m.ID, &m.Name, &m.Year); err != nil {
+		if err := rows.Scan(&m.ID, &m.Name, &m.Year, &m.SizeInBytes); err != nil {
 			return nil, fmt.Errorf("error scanning movie row: %v", err)
 		}
 		movies = append(movies, m)
@@ -86,9 +90,9 @@ func queryMovies() ([]Movie, error) {
 
 func queryMovie(movieId string) (Movie, error) {
 	var movie Movie
-	row := db.QueryRow("SELECT id, title, year FROM movies WHERE id = ?", movieId)
+	row := db.QueryRow("SELECT id, title, year, sizeInBytes FROM movies WHERE id = ?", movieId)
 
-	if err := row.Scan(&movie.ID, &movie.Name, &movie.Year); err != nil {
+	if err := row.Scan(&movie.ID, &movie.Name, &movie.Year, &movie.SizeInBytes); err != nil {
 		if err == sql.ErrNoRows {
 			return Movie{}, fmt.Errorf("movie not found: %v", err)
 		}
@@ -98,7 +102,7 @@ func queryMovie(movieId string) (Movie, error) {
 }
 
 func querySeries() ([]Series, error) {
-	rows, err := db.Query("SELECT id, title, start_year, end_year FROM series ORDER BY title ASC")
+	rows, err := db.Query("SELECT id, title, start_year, end_year, sizeInBytes FROM series ORDER BY title ASC")
 	if err != nil {
 		return nil, fmt.Errorf("error querying series: %v", err)
 	}
@@ -107,7 +111,7 @@ func querySeries() ([]Series, error) {
 	var series []Series
 	for rows.Next() {
 		var s Series
-		if err := rows.Scan(&s.ID, &s.Name, &s.StartYear, &s.EndYear); err != nil {
+		if err := rows.Scan(&s.ID, &s.Name, &s.StartYear, &s.EndYear, &s.SizeInBytes); err != nil {
 			return nil, fmt.Errorf("error scanning series: %v", err)
 		}
 		series = append(series, s)
@@ -117,8 +121,8 @@ func querySeries() ([]Series, error) {
 
 func querySeriesByID(seriesID string) (Series, error) {
 	var s Series
-	row := db.QueryRow("SELECT id, title, start_year, end_year FROM series WHERE id = ?", seriesID)
-	if err := row.Scan(&s.ID, &s.Name, &s.StartYear, &s.EndYear); err != nil {
+	row := db.QueryRow("SELECT id, title, start_year, end_year, sizeInBytes FROM series WHERE id = ?", seriesID)
+	if err := row.Scan(&s.ID, &s.Name, &s.StartYear, &s.EndYear, &s.SizeInBytes); err != nil {
 		if err == sql.ErrNoRows {
 			return Series{}, fmt.Errorf("series not found: %v", err)
 		}
@@ -128,7 +132,7 @@ func querySeriesByID(seriesID string) (Series, error) {
 }
 
 func queryEpisodesBySeriesID(seriesID string) ([]Episode, error) {
-	rows, err := db.Query("SELECT id, season, episode FROM episodes WHERE series_id = ? ORDER BY season, episode", seriesID)
+	rows, err := db.Query("SELECT id, season, episode, sizeInBytes FROM episodes WHERE series_id = ? ORDER BY season, episode", seriesID)
 	if err != nil {
 		return nil, fmt.Errorf("error querying episodes: %v", err)
 	}
@@ -137,7 +141,7 @@ func queryEpisodesBySeriesID(seriesID string) ([]Episode, error) {
 	var episodes []Episode
 	for rows.Next() {
 		var e Episode
-		if err := rows.Scan(&e.ID, &e.Season, &e.Episode); err != nil {
+		if err := rows.Scan(&e.ID, &e.Season, &e.Episode, &e.SizeInBytes); err != nil {
 			return nil, fmt.Errorf("error scanning episodes: %v", err)
 		}
 		episodes = append(episodes, e)
@@ -145,15 +149,15 @@ func queryEpisodesBySeriesID(seriesID string) ([]Episode, error) {
 	return episodes, nil
 }
 
-func queryEpisodesById(episodeID string) (SeriesEpisode, error) {
-	var episode SeriesEpisode
-	row := db.QueryRow("SELECT id, season, episode, series_id FROM episodes WHERE id = ?", episodeID)
-	if err := row.Scan(&episode.ID, &episode.Season, &episode.Episode, &episode.SeriesID); err != nil {
-		return SeriesEpisode{}, fmt.Errorf("error scanning episode: %v", err)
+func queryEpisodesById(episodeID string) (EpisodeWithSeriesName, error) {
+	var episode EpisodeWithSeriesName
+	row := db.QueryRow("SELECT id, season, episode, series_id, sizeInBytes FROM episodes WHERE id = ?", episodeID)
+	if err := row.Scan(&episode.ID, &episode.Season, &episode.Episode, &episode.SeriesID, &episode.SizeInBytes); err != nil {
+		return EpisodeWithSeriesName{}, fmt.Errorf("error scanning episode: %v", err)
 	}
 	row = db.QueryRow("SELECT title, start_year, end_year FROM series WHERE id = ?", episode.SeriesID)
 	if err := row.Scan(&episode.Name, &episode.StartYear, &episode.EndYear); err != nil {
-		return SeriesEpisode{}, fmt.Errorf("error scanning series: %v", err)
+		return EpisodeWithSeriesName{}, fmt.Errorf("error scanning series: %v", err)
 	}
 	return episode, nil
 }

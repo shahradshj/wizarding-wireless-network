@@ -20,7 +20,7 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
     for movie in movies_and_series['Movies']:
         try:
             if not db.get_vidoe_file_by_path(movie.path):
-                db.insert_movie_by_path(movie.name, movie.year, movie.path)
+                db.insert_movie_by_path(movie.name, movie.year, movie.path, movie.sizeInBytes)
                 insertMoviesCount += 1
             else:
                 skipCount += 1
@@ -36,18 +36,23 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
     for series, episodes in movies_and_series['Series'].items():
         try:
             totalEpisodes += len(episodes)
-            if not db.get_vidoe_file_by_path(series.dir_path):
+            videoRow = db.get_vidoe_file_by_path(series.dir_path)
+            seriesTotalSize = 0
+            if not videoRow:
                 series_id = db.insert_series_by_path(series.name, series.start_year, series.end_year, series.dir_path)
                 insertSeriesCount += 1
             else:
-                series_id = db.get_vidoe_file_by_path(series.dir_path)[0]
+                series_id = videoRow[0]
                 skipSeriesCount += 1
             for episode in episodes:
+                seriesTotalSize += episode.sizeInBytes
                 if not db.get_vidoe_file_by_path(episode.path):
-                    db.insert_episode_by_path(episode.path, episode.season, episode.episode, series_id)
+                    db.insert_episode_by_path(episode.path, episode.season, episode.episode, series_id, episode.sizeInBytes)
                     insertEpisodeCount += 1
                 else:
                     skipEpisodeCount += 1
+            if db.get_series_by_id(series_id)['size'] != seriesTotalSize:
+                db.update_series_size(series_id, seriesTotalSize)
         except Exception as e:
             print(f"Error inserting series {series.name}: {e}")
     print(f"Inserted {insertSeriesCount} series out of {len(movies_and_series['Series'])} series. Skipped {skipSeriesCount} series. Failed to insert {len(movies_and_series['Series']) - insertSeriesCount - skipSeriesCount} series.")

@@ -23,6 +23,7 @@ CREATE TABLE movies (
     id VARCHAR(32) PRIMARY KEY,
     title TEXT,
     year INTEGER,
+    sizeInBytes INTEGER,
     FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE
 );
 
@@ -37,6 +38,7 @@ CREATE TABLE series (
     title TEXT,
     start_year INTEGER,
     end_year INTEGER,
+    sizeInBytes INTEGER,
     FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE
 );
 
@@ -51,6 +53,7 @@ CREATE TABLE episodes (
     season INTEGER,
     episode INTEGER,
     series_id INTEGER,
+    sizeInBytes INTEGER,
     FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE,
     FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE
 );
