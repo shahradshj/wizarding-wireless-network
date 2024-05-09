@@ -30,9 +30,15 @@ const FavoriteButton = ({ userId, videoId, initialIsFavorited }) => {
     }, [initialIsFavorited]);
 
     return (
-        <button className="absolute bottom-1 right-2 bg-transparent text-yellow-300 text-xl" onClick={async (e) => { e.preventDefault(); await handleClick(); }}>
-            {isFavorited ? '🟊' : '☆'}
-        </button>
+        <div className="absolute bottom-1 right-2 bg-transparent text-xl"
+            onClick={async (e) => { e.preventDefault(); await handleClick(); }}>
+            {isFavorited && <button className="text-yellow-300 hover:text-white ">
+                ★
+            </button>}
+            {!isFavorited && <button className="text-white hover:text-yellow-300">
+                ☆
+            </button>}
+        </div>
     );
 };
 
