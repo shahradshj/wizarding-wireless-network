@@ -3,3 +3,4 @@
 
 *.db
 *.exe
+movie-database/scanner/.env

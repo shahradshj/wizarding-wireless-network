@@ -7,9 +7,10 @@ sys.path.insert(0, 'movie-database')
 
 from scanner.video_files import VideoFiles
 from database_tuning.db_access import DBAccess
+from scanner.lookup import lookup
 
 
-def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database.db'):
+def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database.db', do_lookup=False):
     video_files = VideoFiles(directory)
     movies_and_series = video_files.parse_movies_and_series()
 
@@ -60,7 +61,11 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
             
     db.close()
 
-    return {"Inserted Movies": insertMoviesCount, "Skipped Movies": skipCount, "Inserted Series": insertSeriesCount, "Skipped Series": skipSeriesCount, "Inserted Episodes": insertEpisodeCount, "Skipped Episodes": skipEpisodeCount}
+    added_info = 0
+    if do_lookup:
+        added_info = lookup(movies_and_series, db_path)
+
+    return {"Inserted Movies": insertMoviesCount, "Skipped Movies": skipCount, "Inserted Series": insertSeriesCount, "Skipped Series": skipSeriesCount, "Inserted Episodes": insertEpisodeCount, "Skipped Episodes": skipEpisodeCount, "Added Info": added_info}
 
 
 def prune(directory: str = 'D:\Movies & Series', db_path='movie-database/database.db'):

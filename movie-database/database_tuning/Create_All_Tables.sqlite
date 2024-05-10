@@ -111,3 +111,15 @@ CREATE TABLE favorites (
 -- Drop the index on user_id column if it already exists
 DROP INDEX IF EXISTS idx_user_id_for_favorites;
 CREATE INDEX idx_user_id_for_favorites ON favorites (user_id);
+
+-- @block create info table
+-- Drop the info table if it already exists
+DROP TABLE IF EXISTS info;
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
+-- Create the info table
+CREATE TABLE info (
+    id VARCHAR(32) PRIMARY KEY,
+    value json,
+    FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE
+);
