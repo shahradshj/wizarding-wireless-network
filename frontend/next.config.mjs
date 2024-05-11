@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        // domains: [process.env.NEXT_PUBLIC_BASE_URL.split('//')[1].split(':')[0]],
         remotePatterns: [
             {
                 protocol: process.env.BACKEND_PROTOCOL,

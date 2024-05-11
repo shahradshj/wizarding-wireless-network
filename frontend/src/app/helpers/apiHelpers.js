@@ -91,13 +91,13 @@ export async function setWatchHistory(userId, videoId, time) {
   }
 }
 
-export async function getVideoInfo(videoId) {
+export async function getVideoType(videoId) {
   try {
-    console.log("Fetching video info for", videoId);
-    const response = await fetch(`${BASE_URL}/infos/${videoId}`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    console.log("Fetching video type for", videoId);
+    const response = await fetch(`${BASE_URL}/type/${videoId}`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
     return response.json();
   } catch (error) {
-    console.error("Error fetching video info: ", error);
+    console.error("Error fetching video type: ", error);
     return null;
   }
 }

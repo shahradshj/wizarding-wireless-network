@@ -19,8 +19,11 @@ import (
 
 const (
 	dbPath     = "./../movie-database/database.db"
+	postersDir = "./../movie-database/posters"
 	serverPort = ":8080"
 )
+
+var postersMap = make(map[string]string)
 
 func main() {
 	defer db.Close()
@@ -31,6 +34,7 @@ func main() {
 	router.HandleFunc("/series", getSeries).Methods("GET")
 	router.HandleFunc("/series/{series_id}", getSeriesEpisodes).Methods("GET")
 	router.HandleFunc("/videos/{id}", getVideoFile).Methods("GET")
+	router.HandleFunc("/type/{id}", getVideoType).Methods("GET")
 	router.HandleFunc("/infos/{id}", getVideoInfo).Methods("GET")
 	router.HandleFunc("/posters/{id}", getPosterFile).Methods("GET")
 	router.HandleFunc("/users/{userName}", getUserId).Methods("GET")
@@ -44,8 +48,19 @@ func main() {
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "PUT", "POST", "DELETE"},
-		// AllowedMethods: []string{"GET"},
 	}).Handler(router)
+
+	log.Println("Reading posters directory")
+	files, err := os.ReadDir(postersDir)
+	if err != nil {
+		log.Fatalf("Error reading posters directory: %v\n", err)
+	}
+	for _, file := range files {
+		filenameWithExt := file.Name()
+		extension := filepath.Ext(filenameWithExt)
+		filename := filenameWithExt[0 : len(filenameWithExt)-len(extension)]
+		postersMap[filename] = postersDir + "/" + file.Name()
+	}
 
 	log.Println("Server is running on http://localhost" + serverPort)
 	log.Fatal(http.ListenAndServe(serverPort, handler))
@@ -122,72 +137,62 @@ func getVideoFile(w http.ResponseWriter, r *http.Request) {
 	serveFile(w, r, path)
 }
 
-func getVideoInfo(w http.ResponseWriter, r *http.Request) {
+func getVideoType(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	videoID := params["id"]
-	log.Printf("Getting video info for: %s\n", videoID)
+	log.Printf("Getting video type for: %s\n", videoID)
 
-	path, err := queryVideoFilePath(videoID)
-	if err != nil {
-		handleError(w, err)
+	var movie Movie
+	var series Series
+	var episode EpisodeWithSeriesName
+	var videoType map[string]interface{}
+
+	var err error
+
+	movie, err = queryMovie(videoID)
+	if err == nil {
+		videoType = map[string]interface{}{
+			"type":  "movie",
+			"movie": movie,
+		}
+		respondWithJSON(w, videoType)
 		return
 	}
-	var info map[string]interface{}
-	if strings.Contains(path, "Movies & Series\\Movies") {
-		var movie, err = queryMovie(videoID)
-		if err != nil {
-			handleError(w, err)
-			return
-		}
-		info = map[string]interface{}{"type": "movie", "movie": movie}
-	} else if strings.Contains(path, "Movies & Series\\Series") {
-		file, err := os.Stat(path)
-		if err != nil {
-			handleError(w, err)
-			return
-		}
 
-		if file.IsDir() {
-			var series, err = querySeriesByID(videoID)
-			if err != nil {
-				handleError(w, err)
-				return
-			}
-			info = map[string]interface{}{"type": "series", "series": series}
-		} else {
-			var episode, err = queryEpisodesById(videoID)
-			if err != nil {
-				handleError(w, err)
-				return
-			}
-			info = map[string]interface{}{"type": "episode", "episode": episode}
+	series, err = querySeriesByID(videoID)
+	if err == nil {
+		videoType = map[string]interface{}{
+			"type":   "series",
+			"series": series,
 		}
-	} else {
-		info = map[string]interface{}{"type": "unknown"}
+		respondWithJSON(w, videoType)
+		return
 	}
-	respondWithJSON(w, info)
+
+	episode, err = queryEpisodesById(videoID)
+	if err == nil {
+		videoType = map[string]interface{}{
+			"type":    "episode",
+			"episode": episode,
+		}
+		respondWithJSON(w, videoType)
+		return
+	}
+
+	handleError(w, fmt.Errorf("video not found: %v", err))
 }
 
 func getPosterFile(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	videoID := params["id"]
 
-	path, err := queryVideoFilePath(videoID)
-	if err != nil {
-		handleError(w, err)
+	log.Printf("Getting poster file for: %s\n", videoID)
+	if path, ok := postersMap[videoID]; ok {
+		serveFile(w, r, path)
 		return
 	}
 
-	var posterPath string
-	if strings.Contains(path, "Movies & Series\\Movies") {
-		posterPath = filepath.Join("./../movie-database/posters", "movies.jpg")
-	} else if strings.Contains(path, "Movies & Series\\Series") {
-		posterPath = filepath.Join("./../movie-database/posters", "series.jpg")
-	} else {
-		posterPath = filepath.Join("./../movie-database/posters", "default.jpg")
-	}
-	log.Printf("Serving poster file for: %s %s %s\n", videoID, path, posterPath)
-	serveFile(w, r, posterPath)
+	serveFile(w, r, filepath.Join(postersDir, "default.jpg"))
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request, path string) {
@@ -325,4 +330,18 @@ func deleteFavorite(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("OK"))
+}
+
+func getVideoInfo(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	videoID := params["id"]
+	log.Printf("Getting video info for: %s\n", videoID)
+
+	info, err := queryInfos(videoID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(info))
 }

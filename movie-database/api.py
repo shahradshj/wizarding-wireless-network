@@ -6,7 +6,7 @@ from scanner.scan import scan, prune
 
 
 app = FastAPI()
-db_path = 'movie-database\database.db'
+db_path = 'movie-database\\database.db'
 
 @app.get("/")
 def read_root():

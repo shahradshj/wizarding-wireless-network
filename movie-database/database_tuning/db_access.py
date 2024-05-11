@@ -167,29 +167,29 @@ class DBAccess:
 
     # Infos
     def insert_info(self, video_file_id: int, info: str):
-        self.c.execute('INSERT INTO info (id, info) VALUES (?, json(?))', (video_file_id, info))
+        self.c.execute('INSERT INTO infos (id, info) VALUES (?, json(?))', (video_file_id, info))
         self.conn.commit()
         return video_file_id
     
     def update_info(self, video_file_id: int, info: str):
-        self.c.execute('UPDATE info SET info = json(?) WHERE id = ?', (info, video_file_id))
+        self.c.execute('UPDATE infos SET info = json(?) WHERE id = ?', (info, video_file_id))
         self.conn.commit()
         return video_file_id
     
     def has_info(self, video_file_id):
-        self.c.execute('SELECT * FROM info WHERE id = ?', (video_file_id,))
+        self.c.execute('SELECT * FROM infos WHERE id = ?', (video_file_id,))
         return self.c.fetchone() is not None
     
     def get_info(self, video_file_id):
-        self.c.execute('SELECT * FROM info WHERE id = ?', (video_file_id,))
+        self.c.execute('SELECT * FROM infos WHERE id = ?', (video_file_id,))
         return self.c.fetchone()
     
     def get_infos(self):
-        self.c.execute('SELECT * FROM info')
-        return [{"id": info[0], "info": info[1]} for info in self.c.fetchall()]
+        self.c.execute('SELECT * FROM infos')
+        return {info[0]: info[1] for info in self.c.fetchall()}
 
     def delete_info(self, video_file_id):
-        self.c.execute('DELETE FROM info WHERE id = ?', (video_file_id,))
+        self.c.execute('DELETE FROM infos WHERE id = ?', (video_file_id,))
         self.conn.commit()
         return video_file_id
     

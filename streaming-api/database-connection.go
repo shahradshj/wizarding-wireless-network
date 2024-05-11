@@ -245,3 +245,12 @@ func queryFavorites(userID string) ([]string, error) {
 	}
 	return favorites, nil
 }
+
+func queryInfos(videoId string) (string, error) {
+	var info string
+	row := db.QueryRow("SELECT info FROM infos WHERE id = ?", videoId)
+	if err := row.Scan(&info); err != nil {
+		return "", fmt.Errorf("error scanning infos table: %v", err)
+	}
+	return info, nil
+}

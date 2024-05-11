@@ -2,25 +2,25 @@
 import './StreamPage.css';
 import Video from '@/app/components/Video';
 import User from '@/app/components/User';
-import { getWatchHistory, getVideoInfo, setWatchHistory } from "@/app/helpers/apiHelpers";
+import { getWatchHistory, getVideoType, setWatchHistory } from "@/app/helpers/apiHelpers";
 
 export async function generateMetadata({ params }) {
     const videoId = params.id
-    const videoName = VideoInfoToName(await getVideoInfo(videoId));
+    const videoName = VideoTypeToName(await getVideoType(videoId));
     return {
         title: videoName,
     }
 }
 
-function VideoInfoToName(info) {
-    if (!info || !info.type) {
+function VideoTypeToName(videoType) {
+    if (!videoType || !videoType.type) {
         return "";
     }
-    if (info.type === "movie") {
-        return `${info.movie.name} (${info.movie.year})`;
+    if (videoType.type === "movie") {
+        return `${videoType.movie.name} (${videoType.movie.year})`;
     }
-    if (info.type === "episode") {
-        return `${info.episode.name} (Season ${info.episode.season} - Episode ${info.episode.episode})`;
+    if (videoType.type === "episode") {
+        return `${videoType.episode.name} (Season ${videoType.episode.season} - Episode ${videoType.episode.episode})`;
     }
     return "";
 }
@@ -28,8 +28,8 @@ function VideoInfoToName(info) {
 export default async function StreamPage({ params, searchParams, }) {
 
     const videoId = params.id;
-    const info = await getVideoInfo(videoId);
-    const title = VideoInfoToName(info);
+    const videoType = await getVideoType(videoId);
+    const title = VideoTypeToName(videoType);
 
     let videoTime = 0;
     const urlSearchParams = new URLSearchParams(searchParams);
@@ -37,9 +37,9 @@ export default async function StreamPage({ params, searchParams, }) {
         console.log("User ID", urlSearchParams.get('userId'));
         try {
             videoTime = await getWatchHistory(urlSearchParams.get('userId'), videoId);
-            if (info && info.type === "episode") {
-                const episodeNumber = info.episode.season * 100 + info.episode.episode;
-                await setWatchHistory(urlSearchParams.get('userId'), info.episode.series_id, episodeNumber);
+            if (videoType && videoType.type === "episode") {
+                const episodeNumber = videoType.episode.season * 100 + videoType.episode.episode;
+                await setWatchHistory(urlSearchParams.get('userId'), videoType.episode.series_id, episodeNumber);
             }
         }
         catch (error) {
