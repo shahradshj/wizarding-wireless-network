@@ -76,13 +76,12 @@ def get_posters(db_path: str):
 
 def prune_posters(db_path: str):
     with DBAccess(db_path) as db:
-
         removed_posters = 0
-        current_posters = {Path(poster).stem: Path(poster) for poster in os.listdir(POSTER_DIRECTORY)}
-        videos = db.get_video_files()
-        for video in videos:
-            if video[0] not in current_posters:
-                os.remove(current_posters[video[0]])
+        current_posters = [(Path(poster).stem, POSTER_DIRECTORY + f'/{poster}') for poster in os.listdir(POSTER_DIRECTORY)]
+        videos = set([id for id, _ in db.get_video_files()])
+        for id, path in current_posters:
+            if len(id) == 32 and id not in videos:
+                os.remove(path)
                 removed_posters += 1
         return removed_posters                
 
