@@ -120,6 +120,6 @@ PRAGMA foreign_keys = ON;
 -- Create the info table
 CREATE TABLE info (
     id VARCHAR(32) PRIMARY KEY,
-    value json,
+    info json,
     FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE
 );

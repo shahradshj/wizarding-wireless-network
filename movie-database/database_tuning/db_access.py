@@ -166,13 +166,13 @@ class DBAccess:
         self.conn.commit()
 
     # Infos
-    def insert_info(self, video_file_id: int, info):
-        self.c.execute('INSERT INTO info (id, info) VALUES (?, ?)', (video_file_id, info))
+    def insert_info(self, video_file_id: int, info: str):
+        self.c.execute('INSERT INTO info (id, info) VALUES (?, json(?))', (video_file_id, info))
         self.conn.commit()
         return video_file_id
     
-    def update_info(self, video_file_id: int, info):
-        self.c.execute('UPDATE info SET info = ? WHERE id = ?', (info, video_file_id))
+    def update_info(self, video_file_id: int, info: str):
+        self.c.execute('UPDATE info SET info = json(?) WHERE id = ?', (info, video_file_id))
         self.conn.commit()
         return video_file_id
     
