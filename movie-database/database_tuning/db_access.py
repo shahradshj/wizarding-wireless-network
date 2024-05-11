@@ -165,6 +165,34 @@ class DBAccess:
         self.c.execute('DELETE FROM episodes WHERE id = ?', (id,))
         self.conn.commit()
 
+    # Infos
+    def insert_info(self, video_file_id: int, info):
+        self.c.execute('INSERT INTO info (id, info) VALUES (?, ?)', (video_file_id, info))
+        self.conn.commit()
+        return video_file_id
+    
+    def update_info(self, video_file_id: int, info):
+        self.c.execute('UPDATE info SET info = ? WHERE id = ?', (info, video_file_id))
+        self.conn.commit()
+        return video_file_id
+    
+    def has_info(self, video_file_id):
+        self.c.execute('SELECT * FROM info WHERE id = ?', (video_file_id,))
+        return self.c.fetchone() is not None
+    
+    def get_info(self, video_file_id):
+        self.c.execute('SELECT * FROM info WHERE id = ?', (video_file_id,))
+        return self.c.fetchone()
+    
+    def get_infos(self):
+        self.c.execute('SELECT * FROM info')
+        return [{"id": info[0], "info": info[1]} for info in self.c.fetchall()]
+
+    def delete_info(self, video_file_id):
+        self.c.execute('DELETE FROM info WHERE id = ?', (video_file_id,))
+        self.conn.commit()
+        return video_file_id
+    
 
     def close(self):
         """

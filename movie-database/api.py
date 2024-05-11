@@ -48,8 +48,8 @@ def read_episodes():
 
 
 @app.get("/scan")
-def scan_dir():
-    return scan()
+def scan_dir(lookup: bool = False):
+    return scan(do_lookup=lookup)
 
 
 @app.get("/prune")

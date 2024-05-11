@@ -13,6 +13,7 @@ from scanner.lookup import lookup
 def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database.db', do_lookup=False):
     video_files = VideoFiles(directory)
     movies_and_series = video_files.parse_movies_and_series()
+    movies_and_series_ids = {"Movies": {}, "Series": {}}
 
     db = DBAccess(db_path)
 
@@ -20,11 +21,14 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
     skipCount = 0
     for movie in movies_and_series['Movies']:
         try:
-            if not db.get_vidoe_file_by_path(movie.path):
-                db.insert_movie_by_path(movie.name, movie.year, movie.path, movie.sizeInBytes)
+            video_row = db.get_vidoe_file_by_path(movie.path)
+            if not video_row:
+                movie_id = db.insert_movie_by_path(movie.name, movie.year, movie.path, movie.sizeInBytes)
                 insertMoviesCount += 1
             else:
+                movie_id = video_row[0]
                 skipCount += 1
+            movies_and_series_ids['Movies'][movie_id] = movie
         except Exception as e:
             print(f"Error inserting movie {movie.name}: {e}")
     print(f"Inserted {insertMoviesCount} movies out of {len(movies_and_series['Movies'])} movies. Skipped {skipCount} movies. Failed to insert {len(movies_and_series['Movies']) - insertMoviesCount - skipCount} movies.")
@@ -54,6 +58,7 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
                     skipEpisodeCount += 1
             if db.get_series_by_id(series_id)['size'] != seriesTotalSize:
                 db.update_series_size(series_id, seriesTotalSize)
+            movies_and_series_ids['Series'][series_id] = series
         except Exception as e:
             print(f"Error inserting series {series.name}: {e}")
     print(f"Inserted {insertSeriesCount} series out of {len(movies_and_series['Series'])} series. Skipped {skipSeriesCount} series. Failed to insert {len(movies_and_series['Series']) - insertSeriesCount - skipSeriesCount} series.")
@@ -63,7 +68,7 @@ def scan(directory: str = 'D:\Movies & Series', db_path='movie-database/database
 
     added_info = 0
     if do_lookup:
-        added_info = lookup(movies_and_series, db_path)
+        added_info = lookup(movies_and_series_ids, db_path)
 
     return {"Inserted Movies": insertMoviesCount, "Skipped Movies": skipCount, "Inserted Series": insertSeriesCount, "Skipped Series": skipSeriesCount, "Inserted Episodes": insertEpisodeCount, "Skipped Episodes": skipEpisodeCount, "Added Info": added_info}
 
