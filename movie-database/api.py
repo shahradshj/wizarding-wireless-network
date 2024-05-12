@@ -6,7 +6,7 @@ from scanner.scan import scan, prune
 
 
 app = FastAPI()
-db_path = 'movie-database\database.db'
+db_path = 'movie-database\\database.db'
 
 @app.get("/")
 def read_root():
@@ -48,8 +48,8 @@ def read_episodes():
 
 
 @app.get("/scan")
-def scan_dir():
-    return scan()
+def scan_dir(lookup: bool = False):
+    return scan(do_lookup=lookup)
 
 
 @app.get("/prune")

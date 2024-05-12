@@ -3,3 +3,5 @@
 
 *.db
 *.exe
+movie-database/scanner/.env
+movie-database/posters/**
