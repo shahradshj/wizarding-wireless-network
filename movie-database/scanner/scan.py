@@ -12,7 +12,8 @@ from scanner.lookup import get_posters, lookup, prune_posters
 def add_movies(movies_and_series, db):
     insertMoviesCount = 0
     skipCount = 0
-    movies_and_series_ids = {"Movies": {}, "Series": {}}
+    ids_to_movies = {}
+
 
     for movie in movies_and_series['Movies']:
         try:
@@ -23,11 +24,11 @@ def add_movies(movies_and_series, db):
             else:
                 movie_id = video_row[0]
                 skipCount += 1
-            movies_and_series_ids['Movies'][movie_id] = movie
+            ids_to_movies[movie_id] = movie
         except Exception as e:
             print(f"Error inserting movie {movie.name}: {e}")
     print(f"Inserted {insertMoviesCount} movies out of {len(movies_and_series['Movies'])} movies. Skipped {skipCount} movies. Failed to insert {len(movies_and_series['Movies']) - insertMoviesCount - skipCount} movies.")
-    return insertMoviesCount, skipCount, movies_and_series_ids
+    return insertMoviesCount, skipCount, ids_to_movies
 
 def add_series(movies_and_series, db):
     insertSeriesCount = 0
@@ -36,6 +37,7 @@ def add_series(movies_and_series, db):
     skipEpisodeCount = 0
     totalEpisodes = 0
     movies_and_series_ids = {"Movies": {}, "Series": {}}
+    ids_to_series = {}
 
     for series, episodes in movies_and_series['Series'].items():
         try:
@@ -57,12 +59,12 @@ def add_series(movies_and_series, db):
                     skipEpisodeCount += 1
             if db.get_series_by_id(series_id)['size'] != seriesTotalSize:
                 db.update_series_size(series_id, seriesTotalSize)
-            movies_and_series_ids['Series'][series_id] = series
+            ids_to_series[series_id] = series
         except Exception as e:
             print(f"Error inserting series {series.name}: {e}")
     print(f"Inserted {insertSeriesCount} series out of {len(movies_and_series['Series'])} series. Skipped {skipSeriesCount} series. Failed to insert {len(movies_and_series['Series']) - insertSeriesCount - skipSeriesCount} series.")
     print(f"Inserted {insertEpisodeCount} episodes out of {totalEpisodes} episodes. Skipped {skipEpisodeCount} episodes. Failed to insert {totalEpisodes - insertEpisodeCount - skipEpisodeCount} episodes.")
-    return insertSeriesCount, insertEpisodeCount, skipSeriesCount, skipEpisodeCount, movies_and_series_ids
+    return insertSeriesCount, insertEpisodeCount, skipSeriesCount, skipEpisodeCount, ids_to_series
 
 
 def scan(directory: str = 'D:\\Movies & Series', db_path='movie-database/database.db', do_lookup=False):
@@ -72,8 +74,8 @@ def scan(directory: str = 'D:\\Movies & Series', db_path='movie-database/databas
 
     db = DBAccess(db_path)
 
-    insertMoviesCount, skipCount, movies_and_series_ids = add_movies(movies_and_series, db)
-    insertSeriesCount, insertEpisodeCount, skipSeriesCount, skipEpisodeCount, movies_and_series_ids = add_series(movies_and_series, db)
+    insertMoviesCount, skipCount, movies_and_series_ids["Movies"] = add_movies(movies_and_series, db)
+    insertSeriesCount, insertEpisodeCount, skipSeriesCount, skipEpisodeCount, movies_and_series_ids["Series"] = add_series(movies_and_series, db)
     db.close()
 
     added_info = 0

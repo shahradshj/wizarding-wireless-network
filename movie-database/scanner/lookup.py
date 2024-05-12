@@ -11,6 +11,7 @@ from database_tuning.db_access import DBAccess
 load_dotenv()
 MOVIE_DATABASE_URL = os.environ.get('MOVIE_DATABASE_URL')
 POSTER_DIRECTORY = os.environ.get('POSTER_DIRECTORY')
+MAX_CONCURRENT_REQUESTS = 10
 
 def lookup(movies_and_series: dict[str, object], db_path: str) -> int:
 
@@ -86,11 +87,9 @@ def prune_posters(db_path: str):
         return removed_posters                
 
 
-SEMAPHORE = asyncio.Semaphore(10)
-
-async def fetch_info(session: aiohttp.ClientSession, url: str):
+async def fetch_info(session: aiohttp.ClientSession, semaphore: asyncio.Semaphore, url: str):
     try:
-        async with SEMAPHORE:
+        async with semaphore:
             async with session.get(url) as response:
                 return (url, await response.json())
     except Exception as e:
@@ -98,18 +97,20 @@ async def fetch_info(session: aiohttp.ClientSession, url: str):
         return (url, None)
 
 async def getInfos(urls: set[str]) -> dict[str, object]:
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
     async with aiohttp.ClientSession() as session:
-        tasks = [asyncio.ensure_future(fetch_info(session, url)) for url in urls]
+        tasks = [asyncio.ensure_future(fetch_info(session, semaphore, url)) for url in urls]
         return await asyncio.gather(*tasks, return_exceptions=True)
     
 async def download_posters(posters_urls_to_ids: dict[int, list[str]]):
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
     async with aiohttp.ClientSession() as session:
-        tasks = [asyncio.ensure_future(download_poster(session, url, ids)) for url, ids in posters_urls_to_ids.items()]
+        tasks = [asyncio.ensure_future(download_poster(session, semaphore, url, ids)) for url, ids in posters_urls_to_ids.items()]
         return await asyncio.gather(*tasks, return_exceptions=True)
     
-async def download_poster(session: aiohttp.ClientSession, url: str, ids: list[str]):
+async def download_poster(session: aiohttp.ClientSession, semaphore: asyncio.Semaphore, url: str, ids: list[str]):
     try:
-        async with SEMAPHORE:
+        async with semaphore:
             async with session.get(url) as response:
                 image = await response.read()
                 for id in ids:

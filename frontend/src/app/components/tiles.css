@@ -1,6 +1,8 @@
 .title {
     width: 200px;
+    height: 300px;
     position: relative;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .poster {
