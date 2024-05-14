@@ -194,7 +194,7 @@ class DBAccess:
         return video_file_id
     
     # Genres
-    def insert_genre(self, genre: str, video_file_id: int):
+    def insert_genre(self, genre: str, video_file_id: str):
         self.c.execute('INSERT INTO genres (genre, id) VALUES (?, ?)', (genre, video_file_id))
         self.conn.commit()
         return video_file_id

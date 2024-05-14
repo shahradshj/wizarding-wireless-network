@@ -50,13 +50,13 @@ def lookup(movies_and_series: dict[str, object], db_path: str) -> int:
     
     for id, url in ids_to_urls.items():
         info = urls_to_infos.get(url)
-        if not info:
+        if not info or "Response" not in info or info["Response"] == "False":
             continue
         db.insert_info(id, json.dumps(info))
         added_info_count += 1
-        if info['Genre']:
+        if 'Genre' in info and info['Genre'] and info['Genre'] != 'N/A':
             for genre in info['Genre'].split(','):
-                db.insert_genre(id, genre.strip())
+                db.insert_genre(genre.strip(), id)
 
     return added_info_count
 

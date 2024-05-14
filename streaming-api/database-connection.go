@@ -274,7 +274,7 @@ func queryGenres() ([]string, error) {
 }
 
 func queryIdsByGenre(genre string) ([]string, error) {
-	rows, err := db.Query("SELECT video_id FROM genres WHERE genre = ?", genre)
+	rows, err := db.Query("SELECT id FROM genres WHERE genre = ?", genre)
 	if err != nil {
 		return nil, fmt.Errorf("error querying genre: %v", err)
 	}
