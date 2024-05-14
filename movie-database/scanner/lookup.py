@@ -54,6 +54,9 @@ def lookup(movies_and_series: dict[str, object], db_path: str) -> int:
             continue
         db.insert_info(id, json.dumps(info))
         added_info_count += 1
+        if info['Genre']:
+            for genre in info['Genre'].split(','):
+                db.insert_genre(id, genre.strip())
 
     return added_info_count
 

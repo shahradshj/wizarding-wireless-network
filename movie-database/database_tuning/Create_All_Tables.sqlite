@@ -107,9 +107,9 @@ CREATE TABLE favorites (
     FOREIGN KEY (video_id) REFERENCES video_files(id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, video_id)
 );
--- Create an index on user_id column
 -- Drop the index on user_id column if it already exists
 DROP INDEX IF EXISTS idx_user_id_for_favorites;
+-- Create an index on user_id column
 CREATE INDEX idx_user_id_for_favorites ON favorites (user_id);
 
 -- @block create infos table
@@ -123,3 +123,20 @@ CREATE TABLE infos (
     info json,
     FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE
 );
+
+-- @block create genres table
+-- Drop the genres table if it already exists
+DROP TABLE IF EXISTS genres;
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
+-- Create the genres table
+CREATE TABLE genres (
+    genre TEXT,
+    id VARCHAR(32),
+    FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE,
+    PRIMARY KEY (genre, id)
+);
+-- Drop the index on genre column if it already exists
+DROP INDEX IF EXISTS idx_genre_for_genres;
+-- Create an index on genre column
+CREATE INDEX idx_genre_for_genres ON genres (genre);

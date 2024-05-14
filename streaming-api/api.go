@@ -37,6 +37,8 @@ func main() {
 	router.HandleFunc("/type/{id}", getVideoType).Methods("GET")
 	router.HandleFunc("/infos/{id}", getVideoInfo).Methods("GET")
 	router.HandleFunc("/posters/{id}", getPosterFile).Methods("GET")
+	router.HandleFunc("/genres", getGenres).Methods("GET")
+	router.HandleFunc("/genres/{genre}", getIdsByGenre).Methods("GET")
 	router.HandleFunc("/users/{userName}", getUserId).Methods("GET")
 	router.HandleFunc("/users/{userName}", addUser).Methods("POST")
 	router.HandleFunc("/users/{userId}/{videoId}", getWatchHistory).Methods("GET")
@@ -344,4 +346,27 @@ func getVideoInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(info))
+}
+
+func getGenres(w http.ResponseWriter, r *http.Request) {
+	log.Println("Getting genres")
+	genres, err := queryGenres()
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, genres)
+}
+
+func getIdsByGenre(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	genre := params["genre"]
+	log.Printf("Getting movies by genre: %s\n", genre)
+
+	movies, err := queryIdsByGenre(genre)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, movies)
 }
