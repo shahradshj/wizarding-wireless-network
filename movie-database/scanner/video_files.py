@@ -13,7 +13,8 @@ class VideoFiles:
     def __init__(self, directory):
         self.directory = directory
         self.extensions = ['.mp4', '.mkv', '.avi', '.flv', '.ts']
-        self.movie_regex = re.compile(r'(.*)_(\d{4})_.*')  # Precompile the regex
+        self.movie_file_regex = re.compile(r'(.*)_(\d{4})_.*')  # Precompile the regex
+        self.movie_dir_regex = re.compile(r'(.*) \((\d{4})\)')
         self.group_of_movie_name = 1
         self.group_of_movie_year = 2
 
@@ -49,10 +50,15 @@ class VideoFiles:
     def parse_movie_name(self, path):
         """Parse movie name from the file path."""
         name = os.path.basename(path)
-        movie_match = self.movie_regex.match(name)  # Use precompiled regex
+        movie_match = self.movie_file_regex.match(name)  # Use precompiled regex
         if movie_match:
-            movie_name = movie_match.group(self.group_of_movie_name).replace("_", " ").strip()
-            year = int(movie_match.group(self.group_of_movie_year))
+            movie_dir_match = self.movie_dir_regex.match(os.path.dirname(path))
+            if movie_dir_match:
+                movie_name = movie_dir_match.group(self.group_of_movie_name)
+                year = int(movie_dir_match.group(self.group_of_movie_year))
+            else:
+                movie_name = movie_match.group(self.group_of_movie_name).replace("_", " ").strip()
+                year = int(movie_match.group(self.group_of_movie_year))
             fileSize = self.getFileSize(path)
             return Movie(movie_name, year, path, fileSize)
         return None
@@ -85,7 +91,7 @@ class VideoFiles:
         if not self.is_video_file(path):
             return False
         episode_match = self.episode_regex.match(path)
-        movie_match = self.movie_regex.match(path)
+        movie_match = self.movie_file_regex.match(path)
         return episode_match is None and movie_match is not None
 
     def is_episode_file(self, path):

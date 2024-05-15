@@ -17,11 +17,13 @@ def main():
     print(f'Parsed {sum(1 for x in video_files.parsed_video_files if x[1] != None)} out of {len(video_files.video_files)} video files.')
 
     confirmation = input("Do you want to organize these files? (yes/no): ")
-    if confirmation.lower() == 'yes':
+    response = confirmation.lower()
+    if response == 'yes' or response == 'y':
         # Call the function to organize the files here
         video_files.organize_files()
-        revert_confirmation = input("Do you want to revert these changes? (yes/no): ")
-        if revert_confirmation.lower() == 'yes':
+        revert_confirmation = input("Do you want to keep these changes? (yes/no): ")
+        response = revert_confirmation.lower()
+        if response == 'no' or response == 'n':
             # Call the function to revert the changes here
             video_files.revert_changes()
     else:
