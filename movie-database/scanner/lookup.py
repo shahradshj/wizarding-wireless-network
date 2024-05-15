@@ -116,10 +116,12 @@ async def download_poster(session: aiohttp.ClientSession, semaphore: asyncio.Sem
         async with semaphore:
             async with session.get(url) as response:
                 image = await response.read()
-                for id in ids:
-                    with open(POSTER_DIRECTORY + f'/{id}.jpg', 'wb') as f:
-                        f.write(image)
-                return (url, True)
+                if response.status == 200:
+                    for id in ids:
+                        with open(POSTER_DIRECTORY + f'/{id}.jpg', 'wb') as f:
+                            f.write(image)
+                    return (url, True)
+                return (url, False)
     except Exception as e:
         print(f"Error downloading poster from {url}: {e}")
         return (url, False)

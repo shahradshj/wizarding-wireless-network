@@ -140,3 +140,21 @@ CREATE TABLE genres (
 DROP INDEX IF EXISTS idx_genre_for_genres;
 -- Create an index on genre column
 CREATE INDEX idx_genre_for_genres ON genres (genre);
+
+-- @block create collections table
+-- Drop the collections table if it already exists
+DROP TABLE IF EXISTS collections;
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
+-- Create the collections table
+CREATE TABLE collections (
+    collection_title TEXT,
+    id VARCHAR(32),
+    FOREIGN KEY (id) REFERENCES video_files(id) ON DELETE CASCADE,
+    PRIMARY KEY (collection_title, id)
+);
+-- Drop the index on collection_title column if it already exists
+DROP INDEX IF EXISTS idx_collection_title_for_collections;
+-- Create an index on collection_title column
+CREATE INDEX idx_collection_title_for_collections ON collections (collection_title);
+

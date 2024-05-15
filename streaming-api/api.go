@@ -39,6 +39,7 @@ func main() {
 	router.HandleFunc("/posters/{id}", getPosterFile).Methods("GET")
 	router.HandleFunc("/genres", getGenres).Methods("GET")
 	router.HandleFunc("/genres/{genre}", getIdsByGenre).Methods("GET")
+	router.HandleFunc("/collections", getCollections).Methods("GET")
 	router.HandleFunc("/users/{userName}", getUserId).Methods("GET")
 	router.HandleFunc("/users/{userName}", addUser).Methods("POST")
 	router.HandleFunc("/users/{userId}/{videoId}", getWatchHistory).Methods("GET")
@@ -369,4 +370,14 @@ func getIdsByGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, movies)
+}
+
+func getCollections(w http.ResponseWriter, r *http.Request) {
+	log.Println("Getting collections")
+	collections, err := queryCollections()
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, collections)
 }

@@ -9,7 +9,7 @@ from scanner.video_files import VideoFiles
 from database_tuning.db_access import DBAccess
 from scanner.lookup import get_posters, lookup, prune_posters
 
-def add_movies(movies_and_series, db):
+def add_movies(movies_and_series, db: DBAccess):
     insertMoviesCount = 0
     skipCount = 0
     ids_to_movies = {}
@@ -21,6 +21,8 @@ def add_movies(movies_and_series, db):
             if not video_row:
                 movie_id = db.insert_movie_by_path(movie.name, movie.year, movie.path, movie.sizeInBytes)
                 insertMoviesCount += 1
+                if movie.collection != "Movies":
+                    db.insert_collection(movie.collection, movie_id)
             else:
                 movie_id = video_row[0]
                 skipCount += 1
@@ -30,13 +32,12 @@ def add_movies(movies_and_series, db):
     print(f"Inserted {insertMoviesCount} movies out of {len(movies_and_series['Movies'])} movies. Skipped {skipCount} movies. Failed to insert {len(movies_and_series['Movies']) - insertMoviesCount - skipCount} movies.")
     return insertMoviesCount, skipCount, ids_to_movies
 
-def add_series(movies_and_series, db):
+def add_series(movies_and_series, db: DBAccess):
     insertSeriesCount = 0
     insertEpisodeCount = 0
     skipSeriesCount = 0
     skipEpisodeCount = 0
     totalEpisodes = 0
-    movies_and_series_ids = {"Movies": {}, "Series": {}}
     ids_to_series = {}
 
     for series, episodes in movies_and_series['Series'].items():

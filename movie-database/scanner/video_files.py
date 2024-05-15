@@ -3,7 +3,7 @@ import glob
 import re
 from collections import namedtuple
 
-Movie = namedtuple('Movie', ['name', 'year', 'path', 'sizeInBytes'])
+Movie = namedtuple('Movie', ['name', 'year', 'path', 'sizeInBytes', 'collection'])
 Episode = namedtuple('Episode', ['name', 'season', 'episode', 'path', 'sizeInBytes'])
 Series = namedtuple('Series', ['name', 'start_year', 'end_year', 'dir_path'])
 
@@ -39,6 +39,7 @@ class VideoFiles:
                 movie = self.parse_movie_name(file_path)
                 if movie:
                     movies_and_series['Movies'].append(movie)
+                        
             elif self.is_episode_file(file_path):
                 series, episode = self.parse_episode_name(file_path)
                 if series:
@@ -52,7 +53,7 @@ class VideoFiles:
         name = os.path.basename(path)
         movie_match = self.movie_file_regex.match(name)  # Use precompiled regex
         if movie_match:
-            movie_dir_match = self.movie_dir_regex.match(os.path.dirname(path))
+            movie_dir_match = self.movie_dir_regex.match(os.path.basename(os.path.dirname(path)))
             if movie_dir_match:
                 movie_name = movie_dir_match.group(self.group_of_movie_name)
                 year = int(movie_dir_match.group(self.group_of_movie_year))
@@ -60,7 +61,8 @@ class VideoFiles:
                 movie_name = movie_match.group(self.group_of_movie_name).replace("_", " ").strip()
                 year = int(movie_match.group(self.group_of_movie_year))
             fileSize = self.getFileSize(path)
-            return Movie(movie_name, year, path, fileSize)
+            collection = os.path.basename(os.path.dirname(os.path.dirname(path)))
+            return Movie(movie_name, year, path, fileSize, collection)
         return None
 
     def parse_episode_name(self, path):

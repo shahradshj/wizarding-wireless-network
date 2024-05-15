@@ -24,8 +24,7 @@ export default async function Genres({ movies, series, urlSearchParams }) {
                             href={`?${newParams}`}
                             key={genre}
                             scroll={true}
-                            className={linkCSSClass}
-                        >
+                            className={linkCSSClass}>
                             {genre}
                         </Link>
                     );

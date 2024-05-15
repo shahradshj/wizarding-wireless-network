@@ -7,6 +7,7 @@ import SeriesContainer from './SeriesContainer';
 import Series from './Series';
 import Favorites from './Favorites';
 import Genres from './Genres';
+import Collections from './Collections';
 
 import { getMovies, getSeries, getSeriesById, getFavorites } from '../helpers/apiHelpers';
 
@@ -34,7 +35,7 @@ export default async function App({ searchParams, }) {
             {navigation === 'series' && <SeriesContainer series={series} urlSearchParams={urlSearchParams} />}
             {navigation === 'suggestions' && <div className='tabs-text'>Suggestions</div>}
             {navigation === 'favorites' && <Favorites movies={movies} series={series} urlSearchParams={urlSearchParams} />}
-            {navigation === 'collections' && <div className='tabs-text'>Collections</div>}
+            {navigation === 'collections' && <Collections movies={movies} urlSearchParams={urlSearchParams} />}
             {navigation === 'genres' && <Genres movies={movies} series={series} urlSearchParams={urlSearchParams} />}
             {selectedSeries && <Series urlSearchParams={urlSearchParams} series={selectedSeries} isFavorited={favoritesSet.has(selectedSeries.id)} />}
         </div>

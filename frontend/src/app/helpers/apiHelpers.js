@@ -160,3 +160,14 @@ export async function getIdsByGenre(genre) {
     return null;
   }
 }
+
+export async function getCollections() {
+  try {
+    console.log("Fetching collections");
+    const response = await fetch(`${BASE_URL}/collections`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching collections: ", error);
+    return null;
+  }
+}

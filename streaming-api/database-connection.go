@@ -290,3 +290,21 @@ func queryIdsByGenre(genre string) ([]string, error) {
 	}
 	return ids, nil
 }
+
+func queryCollections() (map[string][]string, error) {
+	rows, err := db.Query("SELECT collection_title, id FROM collections ORDER BY collection_title ASC")
+	if err != nil {
+		return nil, fmt.Errorf("error querying collections: %v", err)
+	}
+	defer rows.Close()
+
+	collections := make(map[string][]string)
+	for rows.Next() {
+		var title, id string
+		if err := rows.Scan(&title, &id); err != nil {
+			return nil, fmt.Errorf("error scanning collections: %v", err)
+		}
+		collections[title] = append(collections[title], id)
+	}
+	return collections, nil
+}
