@@ -254,3 +254,57 @@ func queryInfos(videoId string) (string, error) {
 	}
 	return info, nil
 }
+
+func queryGenres() ([]string, error) {
+	rows, err := db.Query("SELECT DISTINCT genre FROM genres ORDER BY genre ASC")
+	if err != nil {
+		return nil, fmt.Errorf("error querying genres: %v", err)
+	}
+	defer rows.Close()
+
+	var genres []string
+	for rows.Next() {
+		var genre string
+		if err := rows.Scan(&genre); err != nil {
+			return nil, fmt.Errorf("error scanning genre: %v", err)
+		}
+		genres = append(genres, genre)
+	}
+	return genres, nil
+}
+
+func queryIdsByGenre(genre string) ([]string, error) {
+	rows, err := db.Query("SELECT id FROM genres WHERE genre = ?", genre)
+	if err != nil {
+		return nil, fmt.Errorf("error querying genre: %v", err)
+	}
+	defer rows.Close()
+
+	var ids []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, fmt.Errorf("error scanning genre: %v", err)
+		}
+		ids = append(ids, id)
+	}
+	return ids, nil
+}
+
+func queryCollections() (map[string][]string, error) {
+	rows, err := db.Query("SELECT collection_title, id FROM collections ORDER BY collection_title ASC")
+	if err != nil {
+		return nil, fmt.Errorf("error querying collections: %v", err)
+	}
+	defer rows.Close()
+
+	collections := make(map[string][]string)
+	for rows.Next() {
+		var title, id string
+		if err := rows.Scan(&title, &id); err != nil {
+			return nil, fmt.Errorf("error scanning collections: %v", err)
+		}
+		collections[title] = append(collections[title], id)
+	}
+	return collections, nil
+}

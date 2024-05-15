@@ -138,3 +138,36 @@ export async function removeFavorite(userId, videoId) {
     return false;
   }
 }
+
+export async function getGenres() {
+  try {
+    console.log("Fetching genres");
+    const response = await fetch(`${BASE_URL}/genres`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching genres: ", error);
+    return null;
+  }
+}
+
+export async function getIdsByGenre(genre) {
+  try {
+    console.log("Fetching ids by genre", genre);
+    const response = await fetch(`${BASE_URL}/genres/${genre}`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching ids by genre: ", error);
+    return null;
+  }
+}
+
+export async function getCollections() {
+  try {
+    console.log("Fetching collections");
+    const response = await fetch(`${BASE_URL}/collections`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching collections: ", error);
+    return null;
+  }
+}

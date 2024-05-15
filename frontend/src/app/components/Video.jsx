@@ -11,7 +11,8 @@ import './tiles.css';
 import { setWatchHistory } from '@/app/helpers/apiHelpers';
 
 function UpdateWatchHistory(userId, videoId, videoRef) {
-    if (!videoRef || !videoRef.current || !videoRef.current.currentTime) {
+    if (!userId || !videoId || !videoRef || !videoRef.current || !videoRef.current.currentTime) {
+        console.error("Invalid parameters", userId, videoId, videoRef);
         return;
     }
     const newTime = Math.floor(videoRef.current.currentTime);

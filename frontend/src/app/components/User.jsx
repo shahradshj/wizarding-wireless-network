@@ -9,10 +9,11 @@ const User = ({ searchParams }) => {
     const router = useRouter();
     const urlSearchParams = new URLSearchParams(searchParams);
     const [userName, setUserName] = useState('');
+    const userId = urlSearchParams.get('userId');
 
     useEffect(() => {
-        if (urlSearchParams?.has('userId')) {
-            getUserName(urlSearchParams.get('userId')).then(name => {
+        if (userId) {
+            getUserName(userId).then(name => {
                 if (name) {
                     setUserName(name);
                 }

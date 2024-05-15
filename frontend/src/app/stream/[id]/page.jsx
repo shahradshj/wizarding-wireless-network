@@ -33,6 +33,7 @@ export default async function StreamPage({ params, searchParams, }) {
 
     let videoTime = 0;
     const urlSearchParams = new URLSearchParams(searchParams);
+    console.log("URL Search Params", urlSearchParams);
     if (urlSearchParams.has('userId')) {
         console.log("User ID", urlSearchParams.get('userId'));
         try {

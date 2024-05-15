@@ -193,6 +193,53 @@ class DBAccess:
         self.conn.commit()
         return video_file_id
     
+    # Genres
+    def insert_genre(self, genre: str, video_file_id: str):
+        self.c.execute('INSERT INTO genres (genre, id) VALUES (?, ?)', (genre, video_file_id))
+        self.conn.commit()
+        return video_file_id
+    
+    def get_genres(self):
+        self.c.execute('SELECT DISTINCT genre FROM genres')
+        return [genre[0] for genre in self.c.fetchall()]
+    
+    def get_video_ids_by_genre(self, genre):
+        self.c.execute('SELECT id FROM genres WHERE genre = ?', (genre,))
+        return [video[0] for video in self.c.fetchall()]
+    
+    def get_genres_by_video_id(self, video_file_id):
+        self.c.execute('SELECT genre FROM genres WHERE id = ?', (video_file_id,))
+        return [genre[0] for genre in self.c.fetchall()]
+    
+    def delete_genre(self, genre, video_file_id):
+        self.c.execute('DELETE FROM genres WHERE genre = ? AND id = ?', (genre, video_file_id))
+        self.conn.commit()
+        return video_file_id
+    
+    # Collections
+    def insert_collection(self, collection: str, video_file_id: str):
+        self.c.execute('INSERT INTO collections (collection_title, id) VALUES (?, ?)', (collection, video_file_id))
+        self.conn.commit()
+        return video_file_id
+    
+    def get_collections(self):
+        self.c.execute('SELECT DISTINCT collection_title FROM collections')
+        return [collection[0] for collection in self.c.fetchall()]
+    
+    def get_video_ids_by_collection(self, collection):
+        self.c.execute('SELECT id FROM collections WHERE collection = ?', (collection,))
+        return [video[0] for video in self.c.fetchall()]
+    
+    def get_collections_by_video_id(self, video_file_id):
+        self.c.execute('SELECT collection_title FROM collections WHERE id = ?', (video_file_id,))
+        return [collection[0] for collection in self.c.fetchall()]
+    
+    def delete_collection(self, collection, video_file_id):
+        self.c.execute('DELETE FROM collections WHERE collection = ? AND id = ?', (collection, video_file_id))
+        self.conn.commit()
+        return video_file_id
+    
+    
 
     def close(self):
         """

@@ -112,6 +112,8 @@
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
+    max-width: 100vw;
+    width: 100vw;
 }
 
 .nav-link {
@@ -129,6 +131,28 @@
 
 .nav-link.inactive {
     border-color: rgba(0, 0, 0, 0);
+}
+
+.genresbar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 10px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    max-width: 100vw;
+    width: 100vw;
+}
+
+.collectionsbar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr));
+    grid-gap: 10px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    max-width: 100vw;
+    width: 100vw;
 }
 
 .user-container {

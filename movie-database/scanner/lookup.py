@@ -50,10 +50,13 @@ def lookup(movies_and_series: dict[str, object], db_path: str) -> int:
     
     for id, url in ids_to_urls.items():
         info = urls_to_infos.get(url)
-        if not info:
+        if not info or "Response" not in info or info["Response"] == "False":
             continue
         db.insert_info(id, json.dumps(info))
         added_info_count += 1
+        if 'Genre' in info and info['Genre'] and info['Genre'] != 'N/A':
+            for genre in info['Genre'].split(','):
+                db.insert_genre(genre.strip(), id)
 
     return added_info_count
 
@@ -113,10 +116,12 @@ async def download_poster(session: aiohttp.ClientSession, semaphore: asyncio.Sem
         async with semaphore:
             async with session.get(url) as response:
                 image = await response.read()
-                for id in ids:
-                    with open(POSTER_DIRECTORY + f'/{id}.jpg', 'wb') as f:
-                        f.write(image)
-                return (url, True)
+                if response.status == 200:
+                    for id in ids:
+                        with open(POSTER_DIRECTORY + f'/{id}.jpg', 'wb') as f:
+                            f.write(image)
+                    return (url, True)
+                return (url, False)
     except Exception as e:
         print(f"Error downloading poster from {url}: {e}")
         return (url, False)
