@@ -112,8 +112,6 @@
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
-    max-width: 100vw;
-    width: 100vw;
 }
 
 .nav-link {
@@ -140,8 +138,6 @@
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
-    max-width: 100vw;
-    width: 100vw;
 }
 
 .collectionsbar {
@@ -151,8 +147,6 @@
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
-    max-width: 100vw;
-    width: 100vw;
 }
 
 .user-container {
