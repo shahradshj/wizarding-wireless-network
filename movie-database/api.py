@@ -3,6 +3,7 @@ import uvicorn
 
 from database_tuning.db_access import DBAccess
 from scanner.scan import scan, prune
+from scanner.suggestions import find_suggestions_for_user
 
 
 app = FastAPI()
@@ -63,6 +64,20 @@ def get_videos():
     with DBAccess(db_path) as db:
         videos = db.get_video_files()
     return [f"{v[0]}: {v[1]}" for v in sorted(videos, key=lambda x: x[1])]
+
+@app.get("/scanForSuggestions")
+async def get_suggestions():
+    added_movie_suggestions = 0
+    added_series_suggestions = 0
+    userIds = []
+    with DBAccess(db_path) as db:
+        userIds = [user[0] for user in db.get_users()]
+    for userId in userIds:
+        movie_count, series_count = await find_suggestions_for_user(db_path, userId)
+        added_movie_suggestions += movie_count
+        added_series_suggestions += series_count
+
+    return {"added_movie_suggestions": added_movie_suggestions, "added_series_suggestions": added_series_suggestions}
 
 
 if __name__ == '__main__':

@@ -158,3 +158,22 @@ DROP INDEX IF EXISTS idx_collection_title_for_collections;
 -- Create an index on collection_title column
 CREATE INDEX idx_collection_title_for_collections ON collections (collection_title);
 
+
+-- @block create suggestions table
+-- Drop the suggestions table if it already exists
+DROP TABLE IF EXISTS suggestions;
+-- Enable foreign key constraints
+PRAGMA foreign_keys = ON;
+-- Create the suggestions table
+CREATE TABLE suggestions (
+    user_id VARCHAR(32),
+    video_id VARCHAR(32),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (video_id) REFERENCES video_files(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, video_id)
+);
+-- Drop the index on user_id column if it already exists
+DROP INDEX IF EXISTS idx_user_id_for_suggestions;
+-- Create an index on user_id column
+CREATE INDEX idx_user_id_for_suggestions ON suggestions (user_id);
+
