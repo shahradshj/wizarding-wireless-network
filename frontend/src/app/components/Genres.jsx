@@ -2,10 +2,10 @@ import Link from "next/link";
 
 import MoviesContainer from "./MoviesContainer";
 import SeriesContainer from "./SeriesContainer";
-import { getGenres, getIdsByGenre } from "../helpers/apiHelpers";
+import { getMovies, getSeries, getGenres, getIdsByGenre } from "../helpers/apiHelpers";
 
-export default async function Genres({ movies, series, urlSearchParams }) {
-    const genres = await getGenres();
+export default async function Genres({ urlSearchParams }) {
+    const [movies, series, genres] = await Promise.all([getMovies(), getSeries(), getGenres()]);
     const genre = urlSearchParams.get('genre');
     const genreIds = genre ? new Set(await getIdsByGenre(genre)) : new Set();
 

@@ -1,9 +1,10 @@
 import MoviesContainer from "./MoviesContainer";
 import SeriesContainer from "./SeriesContainer";
-import { getFavorites } from "../helpers/apiHelpers";
+import { getMovies, getSeries, getFavorites } from "../helpers/apiHelpers";
 
-export default async function Favorites({ movies, series, urlSearchParams }) {
+export default async function Favorites({ urlSearchParams }) {
     const userId = urlSearchParams.get('userId');
+    const [movies, series] = await Promise.all([getMovies(), getSeries()]);
 
     const favorites = userId ? new Set(await getFavorites(userId)) : new Set();
     const favoriteMovies = movies?.filter((movie) => favorites.has(movie.id));

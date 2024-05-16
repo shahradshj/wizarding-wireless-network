@@ -2,10 +2,10 @@ import Link from "next/link";
 
 import MoviesContainer from "./MoviesContainer";
 
-import { getCollections } from "../helpers/apiHelpers";
+import { getMovies, getCollections } from "../helpers/apiHelpers";
 
-export default async function Collections({ movies, urlSearchParams }) {
-    const collections = await getCollections();
+export default async function Collections({ urlSearchParams }) {
+    const [movies, collections] = await Promise.all([getMovies(), getCollections()]);
     const collectionNames = Object.keys(collections)
     const selectedCollection = urlSearchParams.get('collection');
     const collectionMovies = movies?.filter((movie) => collections[selectedCollection]?.includes(movie.id));

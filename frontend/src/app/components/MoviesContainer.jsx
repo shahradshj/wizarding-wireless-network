@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import './tiles.css';
 
-import { getFavorites } from '../helpers/apiHelpers';
+import { getMovies, getFavorites } from '../helpers/apiHelpers';
 import Movie from './Movie';
 
 
