@@ -47,6 +47,7 @@ func main() {
 	router.HandleFunc("/favorites/{userId}", getFavorites).Methods("GET")
 	router.HandleFunc("/favorites/{userId}/{videoId}", addFavorite).Methods("POST")
 	router.HandleFunc("/favorites/{userId}/{videoId}", deleteFavorite).Methods("DELETE")
+	router.HandleFunc("/suggestions/{userId}", getSuggestionsForUser).Methods("GET")
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -380,4 +381,17 @@ func getCollections(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, collections)
+}
+
+func getSuggestionsForUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID := params["userId"]
+	log.Printf("Getting suggestions for: %s\n", userID)
+
+	suggestions, err := querySuggestionsForUser(userID)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	respondWithJSON(w, suggestions)
 }

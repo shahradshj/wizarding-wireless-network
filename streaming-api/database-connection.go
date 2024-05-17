@@ -308,3 +308,21 @@ func queryCollections() (map[string][]string, error) {
 	}
 	return collections, nil
 }
+
+func querySuggestionsForUser(userID string) ([]string, error) {
+	rows, err := db.Query("SELECT video_id FROM suggestions WHERE user_id = ?", userID)
+	if err != nil {
+		return nil, fmt.Errorf("error querying suggestions: %v", err)
+	}
+	defer rows.Close()
+
+	var suggestions []string
+	for rows.Next() {
+		var videoID string
+		if err := rows.Scan(&videoID); err != nil {
+			return nil, fmt.Errorf("error scanning suggestions: %v", err)
+		}
+		suggestions = append(suggestions, videoID)
+	}
+	return suggestions, nil
+}

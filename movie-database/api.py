@@ -71,11 +71,17 @@ async def get_suggestions():
     added_series_suggestions = 0
     userIds = []
     with DBAccess(db_path) as db:
-        userIds = [user[0] for user in db.get_users()]
+        userIds = db.get_users()
     for userId in userIds:
         movie_count, series_count = await find_suggestions_for_user(db_path, userId)
         added_movie_suggestions += movie_count
         added_series_suggestions += series_count
+
+    return {"added_movie_suggestions": added_movie_suggestions, "added_series_suggestions": added_series_suggestions}
+
+@app.get("/scanForSuggestions/{userId}")
+async def get_suggestions_for_user(userId):
+    added_movie_suggestions, added_series_suggestions = await find_suggestions_for_user(db_path, userId)
 
     return {"added_movie_suggestions": added_movie_suggestions, "added_series_suggestions": added_series_suggestions}
 

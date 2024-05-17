@@ -8,6 +8,7 @@ import Series from './Series';
 import Favorites from './Favorites';
 import Genres from './Genres';
 import Collections from './Collections';
+import Suggestions from './Suggestions';
 
 import { getMovies, getSeries, getSeriesById, getFavorites } from '../helpers/apiHelpers';
 
@@ -33,7 +34,7 @@ export default async function App({ searchParams, }) {
             <NavigationBar urlSearchParams={urlSearchParams} />
             {navigation === 'movies' && <MoviesContainer movies={movies} urlSearchParams={urlSearchParams} />}
             {navigation === 'series' && <SeriesContainer series={series} urlSearchParams={urlSearchParams} />}
-            {navigation === 'suggestions' && <div className='tabs-text'>Suggestions</div>}
+            {navigation === 'suggestions' && <Suggestions urlSearchParams={urlSearchParams} />}
             {navigation === 'favorites' && <Favorites urlSearchParams={urlSearchParams} />}
             {navigation === 'collections' && <Collections urlSearchParams={urlSearchParams} />}
             {navigation === 'genres' && <Genres urlSearchParams={urlSearchParams} />}
