@@ -74,7 +74,6 @@ class DBAccess:
     
     def get_movies_by_name(self, title):
         self.c.execute('SELECT * FROM movies WHERE title = ?', (title,))
-        
         return [{"id": movie[0], "name": movie[1], "year": movie[2], "size": movie[3]} for movie in self.c.fetchall()]
     
     def delete_movie(self, id):
@@ -239,6 +238,82 @@ class DBAccess:
         self.conn.commit()
         return video_file_id
     
+    # Favorites
+    def insert_favorite(self, user_id: int, video_file_id: str):
+        self.c.execute('INSERT INTO favorites (user_id, video_id) VALUES (?, ?)', (user_id, video_file_id))
+        self.conn.commit()
+        return video_file_id
+    
+    def get_favorites(self):
+        self.c.execute('SELECT * FROM favorites')
+        return [{"user_id": favorite[0], "video_id": favorite[1]} for favorite in self.c.fetchall()]
+    
+    def get_favorites_by_user_id(self, user_id):
+        self.c.execute('SELECT video_id FROM favorites WHERE user_id = ?', (user_id,))
+        return [favorite[0] for favorite in self.c.fetchall()]
+    
+    def get_favorite_movies_by_user_id(self, user_id):
+        self.c.execute('SELECT * from movies where id in (SELECT video_id FROM favorites WHERE user_id = ?)', (user_id,))
+        return [{"id": movie[0], "name": movie[1], "year": movie[2], "size": movie[3]} for movie in self.c.fetchall()]
+    
+    def get_favorite_series_by_user_id(self, user_id):
+        self.c.execute('SELECT * from series where id in (SELECT video_id FROM favorites WHERE user_id = ?)', (user_id,))
+        return [{"id": series[0], "name": series[1], "start year": series[2], "end year": series[3], "size": series[4]} for series in self.c.fetchall()]
+    
+    def delete_favorite(self, user_id, video_file_id):
+        self.c.execute('DELETE FROM favorites WHERE user_id = ? AND video_id = ?', (user_id, video_file_id))
+        self.conn.commit()
+        return video_file_id
+    
+    # suggestions
+    def insert_suggestion(self, user_id: int, video_id: str):
+        self.c.execute('INSERT INTO suggestions (user_id, video_id) VALUES (?, ?)', (user_id, video_id))
+        self.conn.commit()
+        return video_id
+    
+    def get_suggestions(self):
+        self.c.execute('SELECT * FROM suggestions')
+        return [{"user_id": suggestion[0], "video_id": suggestion[1]} for suggestion in self.c.fetchall()]
+    
+    def get_suggestions_by_user_id(self, user_id):
+        self.c.execute('SELECT video_id FROM suggestions WHERE user_id = ?', (user_id,))
+        return [suggestion[0] for suggestion in self.c.fetchall()]
+    
+    def get_suggestions_movies_by_user_id(self, user_id):
+        self.c.execute('SELECT * from movies where id in (SELECT video_id FROM suggestions WHERE user_id = ?)', (user_id,))
+        return [{"id": movie[0], "name": movie[1], "year": movie[2], "size": movie[3]} for movie in self.c.fetchall()]
+    
+    def get_suggestions_series_by_user_id(self, user_id):
+        self.c.execute('SELECT * from series where id in (SELECT video_id FROM suggestions WHERE user_id = ?)', (user_id,))
+        return [{"id": series[0], "name": series[1], "start year": series[2], "end year": series[3], "size": series[4]} for series in self.c.fetchall()]
+    
+    def delete_suggestion(self, user_id, suggestion):
+        self.c.execute('DELETE FROM suggestions WHERE user_id = ? AND video_id = ?', (user_id, suggestion))
+        self.conn.commit()
+        return suggestion
+
+    # Users
+    def insert_user(self, user_id: str):
+        self.c.execute('INSERT INTO users (id) VALUES (?)', (user_id,))
+        self.conn.commit()
+        return user_id
+    
+    def get_users(self):
+        self.c.execute('SELECT * FROM users')
+        return [user[0] for user in self.c.fetchall()]
+    
+    def get_user_name(self, user_id):
+        self.c.execute('SELECT username FROM users WHERE id = ?', (user_id,))
+        return self.c.fetchone()
+    
+    def get_user_id_by_name(self, username):
+        self.c.execute('SELECT id FROM users WHERE username = ?', (username,))
+        return self.c.fetchone()
+    
+    def delete_user(self, user_id):
+        self.c.execute('DELETE FROM users WHERE id = ?', (user_id,))
+        self.conn.commit()
+        return user_id  
     
 
     def close(self):
