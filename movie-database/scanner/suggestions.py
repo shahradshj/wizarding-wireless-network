@@ -37,7 +37,7 @@ async def get_movie_suggestions(movies: list[str]) -> list[str]:
     if len(movies) > MAX_FAVORITES:
         random_indices = random.sample(range(len(movies)), MAX_FAVORITES)
         movies = [movies[i] for i in random_indices]
-    with_user_messages = SYSTEM_MESSAGES_FOR_MOVIES + [{"role": "user", "content": f"I like the movies: {", ".join(movies)}."}]
+    with_user_messages = SYSTEM_MESSAGES_FOR_MOVIES + [{"role": "user", "content": f"I like the movies: {', '.join(movies)}."}]
     try:
         suggestions = await client.chat.completions.create(
             model=MODEL,
@@ -54,7 +54,7 @@ async def get_series_suggestions(series: list[str]) -> list[str]:
     if len(series) > MAX_FAVORITES:
         random_indices = random.sample(range(len(series)), MAX_FAVORITES)
         series = [series[i] for i in random_indices]
-    with_user_messages = SYSTEM_MESSAGES_FOR_SERIES + [{"role": "user", "content": f"I like the series: {", ".join(series)}."}]
+    with_user_messages = SYSTEM_MESSAGES_FOR_SERIES + [{"role": "user", "content": f"I like the series: {', '.join(series)}."}]
     try:
         suggestions = await client.chat.completions.create(
             model=MODEL,

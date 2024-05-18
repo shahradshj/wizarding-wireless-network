@@ -316,7 +316,7 @@ func querySuggestionsForUser(userID string) ([]string, error) {
 	}
 	defer rows.Close()
 
-	var suggestions []string
+	suggestions := []string{}
 	for rows.Next() {
 		var videoID string
 		if err := rows.Scan(&videoID); err != nil {
