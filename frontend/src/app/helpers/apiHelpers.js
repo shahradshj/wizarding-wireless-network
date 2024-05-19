@@ -171,3 +171,14 @@ export async function getCollections() {
     return null;
   }
 }
+
+export async function getSuggestions(userId) {
+  try {
+    console.log("Fetching suggestions for", userId);
+    const response = await fetch(`${BASE_URL}/suggestions/${userId}`, { next: { revalidate: CACHE_EXPIRATION_IN_SECONDS } });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching favorites: ", error);
+    return null;
+  }
+}

@@ -16,11 +16,11 @@ export default async function Favorites({ urlSearchParams }) {
             {userId &&
                 <div>
                     <p className='tabs-text'>Movies</p>
-                    {movies?.length > 0 ?
+                    {favoriteMovies?.length > 0 ?
                         <MoviesContainer movies={favoriteMovies} urlSearchParams={urlSearchParams} /> :
                         <p className="tabs-text">No favorite movies</p>}
                     <p className='tabs-text'>Series</p>
-                    {series?.length > 0 ?
+                    {favoriteSeries?.length > 0 ?
                         <SeriesContainer series={favoriteSeries} urlSearchParams={urlSearchParams} /> :
                         <p className="tabs-text">No favorite series</p>}
                 </div>}
