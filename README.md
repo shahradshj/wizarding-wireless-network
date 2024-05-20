@@ -198,14 +198,72 @@ The Streaming API provides the following endpoints:
 
 - `GET /infos/{id}`: Retrieves the video information for a specific video obtained from OMDb.
 
-- `GET /posters/{id}`: Retrieves the poster file for a specific video.\
-&nbsp; ![poster for Harry Potter and the Deathly Hallows Part 1](./readme-images/HP-7-1.jpg)
+- `GET /posters/{id}`: Retrieves the poster file for a specific video. \
+![poster for Harry Potter and the Deathly Hallows Part 1](./readme-images/HP-7-1.jpg)
 
 - `GET /genres`: Retrieves a list of all genres.
+```jsonc
+[
+    "Action",
+    "Adventure",
+    "Animation",
+    "Comedy",
+    "Documentary",
+    "Sci-Fi",
+    "Western"
+]
+```
 
-- `GET /genres/{genre}`: Retrieves video IDs by genre.
+- `GET /genres/{genre}`: Retrieves video IDs by genre. \
+&nbsp;&nbsp;&nbsp;`GET /genres/History:`
+```jsonc
+[
+    "0117ee3cb6e5474cb5082259a297087c",
+    "0826d19548794e6eb90b1ae3b8e11dea",
+    "11845d5a6a514e79ac121eadd2b2c4a0",
+    "3ad54dd92bd343b889571399694c3352",
+    "55d4686a42c8427c9b9fd6e9bc6b0ba0",
+    "64f8c54c454844a9b902c7e8230da9e8",
+    "7b1c0062d16442d99f0202a645a994fe",
+    "7dcb79b0116a45659e6812ec7f5ba7d5",
+    "8df110a9e7a14f9c971fc064ae8d858d",
+    "ae939948e777442599d935bd215d5f51",
+    "ae9bcb488e6847f3be00f70f0b34056b",
+    "cd009e54593c40078db7bf38e75be79d",
+    "cd0f47d7dbac4ac38bb74c16e074a67a",
+    "d9db9679289d436e94f714a6df54ad6e"
+]
+```
 
 - `GET /collections`: Retrieves a JSON of all collections, with list of video ids in each collection.
+```jsonc
+{
+    // ...
+    "Fantastic Beasts (2016 - 2021)": [
+        "02b423ff22a647399e951cdf92476bc9",
+        "11445ac35e5f41aeac7de3cf8f653d29",
+        "2ec829e038354323935d98e55f4235a2"
+    ],
+    // ...
+    "Harry Potter (2001 - 2011)": [
+        "0a1ded975cd54ea690687287cd383e5d",
+        "0ddf031d91844849bf318ea7c7250269",
+        "2e23c3cb3745415cba3d49536cbe8e97",
+        "330f128e02704e3489295909b9363d5f",
+        "397cd904891242738b42bb98f9b9df93",
+        "40b410c59bcd4e729ea5935bf22b1b92",
+        "4112f9c11a2c4eefa23304d6b8b337ef",
+        "48cfcf86868b45ca8aff49c9fa380249"
+    ],
+    // ...
+    "The Lord of the Rings (2001 - 2003)": [
+        "106e0c078dea4f0bac12ca0b88f9ec4d",
+        "20cc5879a2f844d48ce831f933fb98f7",
+        "2576a6dad7d44b55b52f9c4a759fdf03"
+    ]
+    // ...
+}
+```
 
 - `GET /users/{userName}`: Retrieves the user ID for given userName.
 
