@@ -1,4 +1,4 @@
-# <p>Wizarding Wireless Network <img align="right" src="readme-images\WWN.png" style="width:40px;" /> </p>
+# <p>Wizarding Wireless Network <img align="right" src="./readme-images/WWN.png" style="width:40px;" /> </p>
 
 <!-- # Wizarding Wireless Network ![WWN Logo](WWN.png) -->
 
@@ -192,7 +192,7 @@ The Streaming API provides the following endpoints:
 ```
 - `GET /infos/{id}`: Retrieves the video information for a specific video obtained from OMDb.
 - `GET /posters/{id}`: Retrieves the poster file for a specific video.
-![poster for Harry Potter and the Deathly Hallows Part 1](readme-images\HP-7-1.jpg)
+![poster for Harry Potter and the Deathly Hallows Part 1](./readme-images/HP-7-1.jpg)
 - `GET /genres`: Retrieves a list of all genres.
 - `GET /genres/{genre}`: Retrieves video IDs by genre.
 - `GET /collections`: Retrieves a JSON of all collections, with list of video ids in each collection.
