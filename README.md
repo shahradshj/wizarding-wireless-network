@@ -54,6 +54,7 @@ The Streaming API provides the following endpoints:
     // ...
 ]
 ```
+
 - `GET /movies/{movie_id}`: Retrieves details of a specific movie.
 ```json
 {
@@ -63,6 +64,7 @@ The Streaming API provides the following endpoints:
     "size_in_bytes": 55781837360
 }
 ```
+
 - `GET /series`: Retrieves a list of all series.
 ```json
 [
@@ -112,6 +114,7 @@ The Streaming API provides the following endpoints:
     // ...
 ]
 ```
+
 - `GET /series/{series_id}`: Retrieves details of a specific series and its episodes.
 ```json
 {
@@ -150,7 +153,9 @@ The Streaming API provides the following endpoints:
     "size_in_bytes": 65061479827
 }
 ```
+
 - `GET /videos/{id}`: Retrieves the video file for a specific video.
+
 - `GET /type/{id}`: Retrieves the type (movies, series, or episode) for the given id along side the movies, series, or episode itself.
 ```json
 // for a movie:
@@ -190,26 +195,41 @@ The Streaming API provides the following endpoints:
     "type": "episode"
 }
 ```
+
 - `GET /infos/{id}`: Retrieves the video information for a specific video obtained from OMDb.
-- `GET /posters/{id}`: Retrieves the poster file for a specific video.
+
+- `GET /posters/{id}`: Retrieves the poster file for a specific video. 
 ![poster for Harry Potter and the Deathly Hallows Part 1](./readme-images/HP-7-1.jpg)
+
 - `GET /genres`: Retrieves a list of all genres.
+
 - `GET /genres/{genre}`: Retrieves video IDs by genre.
+
 - `GET /collections`: Retrieves a JSON of all collections, with list of video ids in each collection.
+
 - `GET /users/{userName}`: Retrieves the user ID for given userName.
+
 - `POST /users/{userName}`: Adds a new user.
+
 - `GET /users/{userId}/{videoId}`: Retrieves the watch history of a user for a video.
+
 - `PUT /users/{userId}/{videoId}/{timestamps}`: Adds a new entry to the watch history of a user for a video video.
+
 - `GET /favorites/{userId}`: Retrieves the favorited video ids for a specific user.
+
 - `POST /favorites/{userId}/{videoId}`: Adds a video id to the favorites for the user.
+
 - `DELETE /favorites/{userId}/{videoId}`: Removes a video from the favorites for the user.
+
 - `GET /suggestions/{userId}`: Retrieves video suggestions for a specific user.
 
+
 ### 2. Frontend
+Frontend
 
 
 ### 3. movie-databse
-ahdjsdjk
+movie-databse
 
 ### 4. video-organizer
-ahdjsdjk
+video-organizer
