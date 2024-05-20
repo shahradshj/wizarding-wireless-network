@@ -15,7 +15,7 @@ Welcome to the Wizarding Wireless Network project! This project aims to create a
 The Streaming API provides the following endpoints:
 
 - `GET /movies`: Retrieves a list of all movies.
-```json
+```jsonc
 [
     {
         "id": "2f7f23faebee4043a988cccdfca2b20d",
@@ -56,7 +56,7 @@ The Streaming API provides the following endpoints:
 ```
 
 - `GET /movies/{movie_id}`: Retrieves details of a specific movie.
-```json
+```jsonc
 {
     "id": "59aa8284d61e46ea82f3f1dbb2109f24",
     "name": "Harry Potter and the Deathly Hallows Part 1",
@@ -66,7 +66,7 @@ The Streaming API provides the following endpoints:
 ```
 
 - `GET /series`: Retrieves a list of all series.
-```json
+```jsonc
 [
     {
         "id": "e1f660e391154a78ac8585d5f7c5e9dd",
@@ -116,7 +116,7 @@ The Streaming API provides the following endpoints:
 ```
 
 - `GET /series/{series_id}`: Retrieves details of a specific series and its episodes.
-```json
+```jsonc
 {
     "id": "b73ae3ca4f5543f689ef32a5442729da",
     "name": "The Grand Tour",
@@ -157,7 +157,7 @@ The Streaming API provides the following endpoints:
 - `GET /videos/{id}`: Retrieves the video file for a specific video.
 
 - `GET /type/{id}`: Retrieves the type (movies, series, or episode) for the given id along side the movies, series, or episode itself.
-```json
+```jsonc
 // for a movie:
 {
     "movie": {
@@ -198,8 +198,8 @@ The Streaming API provides the following endpoints:
 
 - `GET /infos/{id}`: Retrieves the video information for a specific video obtained from OMDb.
 
-- `GET /posters/{id}`: Retrieves the poster file for a specific video. 
-![poster for Harry Potter and the Deathly Hallows Part 1](./readme-images/HP-7-1.jpg)
+- `GET /posters/{id}`: Retrieves the poster file for a specific video.\
+&nbsp; ![poster for Harry Potter and the Deathly Hallows Part 1](./readme-images/HP-7-1.jpg)
 
 - `GET /genres`: Retrieves a list of all genres.
 
