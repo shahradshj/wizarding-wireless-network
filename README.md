@@ -4,7 +4,7 @@
 
 Welcome to the Wizarding Wireless Network project! This project aims to create a magical wireless network for wizards and witches to stream movies and series on your local network (similar to Plex for muggles).
 
-### WWN has 4 main parts:
+### Wizarding Wireless Network has 4 main parts:
 - [Streaming API](#1-streaming-api): A RESTfull API written in GoLang for serving movies and series.
 - [Frontend](#2-frontend): A React Web App for browsing and streaming movies and series from Streaming API.
 - [movie-databse](#3-movie-databse): A Python script for adding new movies and series and managing the databse.
@@ -266,25 +266,51 @@ The Streaming API provides the following endpoints:
 ```
 
 - `GET /users/{userName}`: Retrieves the user ID for given userName.
+```jsonc
+{
+    "id": "8ea57dc5a02e4b7f9b72fefff40e49f1",
+    "username": "hermione"
+}
+```
 
-- `POST /users/{userName}`: Adds a new user.
+- `POST /users/{userName}`: Adds a new user and returns user Id.
 
 - `GET /users/{userId}/{videoId}`: Retrieves the watch history of a user for a video.
 
 - `PUT /users/{userId}/{videoId}/{timestamps}`: Adds a new entry to the watch history of a user for a video video.
 
 - `GET /favorites/{userId}`: Retrieves the favorited video ids for a specific user.
+```jsonc
+[
+    "48cfcf86868b45ca8aff49c9fa380249",
+    "59aa8284d61e46ea82f3f1dbb2109f24",
+    "ced70e42c0164c58b9ed755ade7a34df",
+    "e1f660e391154a78ac8585d5f7c5e9dd",
+    "f02a9103c80947e2ae09cb300759ef3e"
+]
+```
 
 - `POST /favorites/{userId}/{videoId}`: Adds a video id to the favorites for the user.
 
 - `DELETE /favorites/{userId}/{videoId}`: Removes a video from the favorites for the user.
 
 - `GET /suggestions/{userId}`: Retrieves video suggestions for a specific user.
+```jsonc
+[
+    "00592122f7744ea6a9494952f9b9b332",
+    "04fdeb6116d64f5894c5a9b65b871069",
+    "12a0bf9156f042f78f4c719b37b1c20d",
+    "2bbf403f74f349acbf9c48b1bbcc4b7e",
+    "40f213c93e8d4e9da1ed0a2754cf099b"
+]
+```
 
 
 ### 2. Frontend
-Frontend
+The frontend is a React web app that allows users to borwser movies and series from the backend, streaming API: \
+![Browsing before sing in](./readme-images/Browsing%20before%20sing%20in.gif)
 
+By singing in, you can mark movies and series as favorites, and get suggestions. It will also keep track of the last episode of each series that you have watched, and the timestamp of each video that you have watched.
 
 ### 3. movie-databse
 movie-databse
