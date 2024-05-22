@@ -7,7 +7,7 @@ Welcome to the Wizarding Wireless Network project! This project aims to create a
 ### Wizarding Wireless Network has 4 main parts:
 - [Streaming API](#1-streaming-api): A RESTfull API written in GoLang for serving movies and series.
 - [Frontend](#2-frontend): A React Web App for browsing and streaming movies and series from Streaming API.
-- [movie-databse](#3-movie-databse): A Python script for adding new movies and series and managing the databse.
+- [movie-database](#3-movie-database): A Python script for adding new movies and series and managing the databse.
 - [video-organizer](#4-video-organizer): Organizing Video files into appropriate folders.
 
 ### 1. Streaming API
@@ -32,13 +32,6 @@ The Streaming API provides the following endpoints:
     },
     // ...
     {
-        "id": "8df110a9e7a14f9c971fc064ae8d858d",
-        "name": "Dunkirk",
-        "year": 2017,
-        "size_in_bytes": 4188651378
-    },
-    // ...
-    {
         "id": "889c3ff7950e420ba36c93ec26c40c55",
         "name": "Harry Potter and the Prisoner of Azkaban",
         "year": 2004,
@@ -55,7 +48,7 @@ The Streaming API provides the following endpoints:
 ]
 ```
 
-- `GET /movies/{movie_id}`: Retrieves details of a specific movie.
+- `GET /movies/{movie_id}`: Retrieves details of the given movie.
 ```jsonc
 {
     "id": "59aa8284d61e46ea82f3f1dbb2109f24",
@@ -115,7 +108,7 @@ The Streaming API provides the following endpoints:
 ]
 ```
 
-- `GET /series/{series_id}`: Retrieves details of a specific series and its episodes.
+- `GET /series/{series_id}`: Retrieves details of the given series and its episodes.
 ```jsonc
 {
     "id": "b73ae3ca4f5543f689ef32a5442729da",
@@ -154,7 +147,7 @@ The Streaming API provides the following endpoints:
 }
 ```
 
-- `GET /videos/{id}`: Retrieves the video file for a specific video.
+- `GET /videos/{id}`: Serves the video file for the given video.
 
 - `GET /type/{id}`: Retrieves the type (movies, series, or episode) for the given id along side the movies, series, or episode itself.
 ```jsonc
@@ -196,9 +189,9 @@ The Streaming API provides the following endpoints:
 }
 ```
 
-- `GET /infos/{id}`: Retrieves the video information for a specific video obtained from OMDb.
+- `GET /infos/{id}`: Retrieves the video information for the given id obtained and cached from OMDb.
 
-- `GET /posters/{id}`: Retrieves the poster file for a specific video. \
+- `GET /posters/{id}`: Retrieves the poster file for the given id. \
 ![poster for Harry Potter and the Deathly Hallows Part 1](./readme-images/HP-7-1.jpg)
 
 - `GET /genres`: Retrieves a list of all genres.
@@ -214,7 +207,7 @@ The Streaming API provides the following endpoints:
 ]
 ```
 
-- `GET /genres/{genre}`: Retrieves video IDs by genre. \
+- `GET /genres/{genre}`: Retrieves video IDs in the given genre. \
 &nbsp;&nbsp;&nbsp;`GET /genres/History:`
 ```jsonc
 [
@@ -277,9 +270,9 @@ The Streaming API provides the following endpoints:
 
 - `GET /users/{userId}/{videoId}`: Retrieves the watch history of a user for a video.
 
-- `PUT /users/{userId}/{videoId}/{timestamps}`: Adds a new entry to the watch history of a user for a video video.
+- `PUT /users/{userId}/{videoId}/{timestamps}`: Adds a new entry to the watch history of a user for a video.
 
-- `GET /favorites/{userId}`: Retrieves the favorited video ids for a specific user.
+- `GET /favorites/{userId}`: Retrieves favorite video ids for the given user.
 ```jsonc
 [
     "48cfcf86868b45ca8aff49c9fa380249",
@@ -290,7 +283,7 @@ The Streaming API provides the following endpoints:
 ]
 ```
 
-- `POST /favorites/{userId}/{videoId}`: Adds a video id to the favorites for the user.
+- `POST /favorites/{userId}/{videoId}`: Adds the video id to the user's favorites.
 
 - `DELETE /favorites/{userId}/{videoId}`: Removes a video from the favorites for the user.
 
@@ -307,13 +300,25 @@ The Streaming API provides the following endpoints:
 
 
 ### 2. Frontend
-The frontend is a React web app that allows users to borwser movies and series from the backend, streaming API: \
+The frontend is a React web app that allows users to borwser movies and series from the backend (Streaming API): \
 ![Browsing before sing in](./readme-images/Browsing%20before%20sing%20in.gif)
 
-By singing in, you can mark movies and series as favorites, and get suggestions. It will also keep track of the last episode of each series that you have watched, and the timestamp of each video that you have watched.
+By singing in, users can mark movies and series as favorites, and get suggestions. \
+![User favorites](./readme-images/User%20favorites.gif)
 
-### 3. movie-databse
-movie-databse
+It will also keep track of the last episode of each series that each user have watched, and the last timestamp of each video that they have watched. \
+![Watch history](./readme-images/Watch%20history.gif)
+
+### 3. movie-database
+Movie database containes the scripts for creating the SQLite database for storing movies and series data, and populating its tables.
+It also has an API for easier interation, but it is only ment to be used for when new movies or series are added:
+
+- `GET /scan/{lookup?}`: It Scans the directory for movies and series for new entries and add them to the database. If the option lookup parameter is True, it will also get movies information via OMDb, and updates genres table accordingly. It will response with a JSON contaning counts of added entries.
+
+- `GET /prune`: It Scans the directory for movies and series for missing entries and remove them from the database. It will response with a JSON of removed entries.
+
+- `GET /scanForSuggestions`: For each user, it will get movies and series suggestions, based on the user favorites, from Open AI's GPT 3.5 model.
+
 
 ### 4. video-organizer
-video-organizer
+Video Organizer will organize movies and series in the given directory into appropiate directory structure by parsing video file's names.
