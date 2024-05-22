@@ -2,15 +2,15 @@
 
 <!-- # Wizarding Wireless Network ![WWN Logo](WWN.png) -->
 
-Welcome to the Wizarding Wireless Network project! This project aims to create a magical wireless network for wizards and witches to stream movies and series on your local network (similar to Plex for muggles).
+Welcome to the Wizarding Wireless Network project! This project aims to create a magical wireless network for wizards and witches to stream movies and series on your local network (similar to Plex for muggles). 
 
-### Wizarding Wireless Network has 4 main parts:
+## Wizarding Wireless Network has 4 main parts:
 - [Streaming API](#1-streaming-api): A RESTfull API written in GoLang for serving movies and series.
 - [Frontend](#2-frontend): A React Web App for browsing and streaming movies and series from Streaming API.
 - [movie-database](#3-movie-database): A Python script for adding new movies and series and managing the databse.
 - [video-organizer](#4-video-organizer): Organizing Video files into appropriate folders.
 
-### 1. Streaming API
+## 1. Streaming API
 
 The Streaming API provides the following endpoints:
 
@@ -309,7 +309,7 @@ By singing in, users can mark movies and series as favorites, and get suggestion
 It will also keep track of the last episode of each series that each user have watched, and the last timestamp of each video that they have watched. \
 ![Watch history](./readme-images/Watch%20history.gif)
 
-### 3. movie-database
+## 3. movie-database
 Movie database containes the scripts for creating the SQLite database for storing movies and series data, and populating its tables.
 It also has an API for easier interation, but it is only ment to be used for when new movies or series are added:
 
@@ -320,5 +320,5 @@ It also has an API for easier interation, but it is only ment to be used for whe
 - `GET /scanForSuggestions`: For each user, it will get movies and series suggestions, based on the user favorites, from Open AI's GPT 3.5 model.
 
 
-### 4. video-organizer
+## 4. video-organizer
 Video Organizer will organize movies and series in the given directory into appropiate directory structure by parsing video file's names.
