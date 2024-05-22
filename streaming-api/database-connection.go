@@ -235,7 +235,7 @@ func queryFavorites(userID string) ([]string, error) {
 	}
 	defer rows.Close()
 
-	var favorites []string
+	favorites := []string{}
 	for rows.Next() {
 		var videoID string
 		if err := rows.Scan(&videoID); err != nil {
@@ -247,7 +247,7 @@ func queryFavorites(userID string) ([]string, error) {
 }
 
 func queryInfos(videoId string) (string, error) {
-	var info string
+	info := ""
 	row := db.QueryRow("SELECT info FROM infos WHERE id = ?", videoId)
 	if err := row.Scan(&info); err != nil {
 		return "", fmt.Errorf("error scanning infos table: %v", err)
@@ -262,7 +262,7 @@ func queryGenres() ([]string, error) {
 	}
 	defer rows.Close()
 
-	var genres []string
+	genres := []string{}
 	for rows.Next() {
 		var genre string
 		if err := rows.Scan(&genre); err != nil {
@@ -280,7 +280,7 @@ func queryIdsByGenre(genre string) ([]string, error) {
 	}
 	defer rows.Close()
 
-	var ids []string
+	ids := []string{}
 	for rows.Next() {
 		var id string
 		if err := rows.Scan(&id); err != nil {
