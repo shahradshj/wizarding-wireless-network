@@ -10,6 +10,8 @@ Welcome to the Wizarding Wireless Network project! This project aims to create a
 - [movie-database](#3-movie-database): A Python script for adding new movies and series and managing the databse.
 - [video-organizer](#4-video-organizer): Organizing Video files into appropriate folders.
 
+To get started, organize your movies using video-organizer. Then create and populate the database using movie-database. Finally, start streaming-api and frontend react web app.
+
 ## 1. Streaming API
 
 The Streaming API provides the following endpoints:
