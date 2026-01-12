@@ -5,3 +5,7 @@
 *.exe
 movie-database/scanner/.env
 movie-database/posters/**
+
+# Claude Code
+.claude/
+tmpclaude-*
